@@ -1,0 +1,66 @@
+.vertical-container, .horizontal-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: stretch;
+  align-content: center;
+  padding: .2cm;
+}
+
+.vertical-container {
+  flex-direction: column;
+}
+
+.horizontal-container {
+  flex-direction: row;
+}
+
+.horizontal-container *, .vertical-container * {
+  flex-grow: 1;
+}
+
+.hidden {
+  display: none;
+}
+
+.main-pane:not(.current) {
+  display: none;
+}
+
+
+#idle-top-pane {
+  height: 10cm
+}
+
+#idle-data, #schematic-diagram {
+  flex-grow: 3;
+}
+
+#idle-pane, #charging-pane, body {
+  height: 100vh;
+}
+
+#idle-data p {
+  margin-left: 10%;
+}
+
+#charging-top-pane {
+  flex-grow: 4
+}
+
+#charging-message {
+  text-align: center;
+  font-size: 150%;
+  flex-grow: 0
+}
+
+#user-id-dialog {
+  position: fixed;
+  top: 20%;
+  left: 40%;
+}
+
+#time-series-plot {
+  width: 10cm;
+  padding: 0;
+}

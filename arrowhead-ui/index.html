@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="mui.min.css">
+</head>
+<body>
+  <div id="idle-pane" class="main-pane vertical-container current">
+    <div id="idle-top-pane" class="horizontal-container">
+      <div id="schematic-diagram" class="mui-panel">
+        Schematic diagram
+      </div>
+      <div id="time-series-plot" class="mui-panel">
+      </div>
+    </div>
+    <div id="idle-bottom-pane" class="horizontal-container">
+      <div id="idle-data" class="vertical-container">
+        <ul>
+          <li id="cs-busy-message" style="display:none;">Charge in progress</li>
+          <li id="cs-idle-message">Charging station idle</li>
+          <li data-modality="t3.1.2">
+              <span id="unknown-booking-state-message" class="hidden">Unable to contact booking service!</span>
+              <span id="station-reserved-message" class="hidden">Station is reserved now, press Start recharge button to begin</span>
+              <span id="no-recharge-booked-message" class="hidden">No recharges booked</span>
+              <span id="recharge-booked-message" class="hidden">Next recharge booked at <span id="booked-recharge-time"></span></span>
+          </li>
+          <li>Storage battery SOC: <span data-metric="Storage_Battery_SOC"></span>%</li>
+          <li>Available energy: <span data-metric="Energy_Out"></span> Wh</li>
+          <li>Actual PV power: <span data-metric="Power_PV"></span> W</li>
+        </ul>
+      </div>
+      <div data-modality="t3.1.2" id="recharge-control">
+        <button id="book-button" class="mui-btn mui-btn--primary">Book</button>
+        <button id="start-recharge-button" class="mui-btn mui-btn--primary">Start recharge</button>
+      </div>
+    </div>
+  </div>
+
+  <div data-modality="t3.1.2" id="user-id-dialog" class="mui-panel hidden">
+    <input id="user-id-input" value="Please enter user id"></input>
+    <button id="user-id-confirm" class="mui-btn mui-btn--primary">ok</button>
+  </div>
+
+  <div id="charging-pane" class="vertical-container main-pane">
+    <div id="charging-top-pane" class="horizontal-container">
+      Picture
+    </div>
+    <div id="charging-message">
+      Charge in progress... <button data-modality="t3.1.2" id="stop-recharge-button" class="mui-btn mui-btn--primary">Stop Recharge</button>
+    </div>
+    <div id="charging-bottom-pane" class="horizontal-container">
+      <div id="charging-left">
+        <ul>
+          <li>Charge Power: <span data-metric="Power_Out"></span> kW</li>
+          <li data-modality="t3.1.1">Expected charge time remaining <span data-modality="t3.1.1" data-metric="Hours_to_Recharge_Estimated"></span> hours <span data-modality="t3.1.1" data-metric="Minutes_to_Recharge_Estimated"></span> minutes</li>
+          <li data-modality="t3.1.2">Expected charge time remaining <span data-modality="t3.1.2" data-metric="Minutes_to_Recharge_Estimated"></span> minutes <span data-modality="t3.1.2" data-metric="Seconds_to_Recharge_Estimated"></span> seconds</li>
+          <li>Charge current: <span data-metric="I_Out"></charge-current>A</li>
+          <li>Charge voltage: <span data-metric="V_Out "></span>V</li>
+        </ul>
+      </div>
+      <div id="charging-right">
+        <ul>
+          <li>Storage battery SOC: <span data-metric="Storage_Battery_SOC"></span></li></li>
+          <li>Available energy: <span data-metric="Energy_Out"></span> Wh</li>
+          <li>Actual PV power: <span data-metric="Power_PV"></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script src="arrowhead-config.js"></script>
+  <script src="plotly-latest.min.js"></script>
+  <script src="request.js"></script>
+  <script src="eth-cloud-client.js"></script>
+  <script src="arrowhead-control.js"></script>
+  <script src="metric-binding.js"></script>
+  <script src="arrowhead-rest.js"></script>
+  <script src="plot.js"></script>
+  <script src="arrowhead-modality-t3.1.2.js"></script>
+  <script src="arrowhead-main.js"></script>
+</body>
+</html>
