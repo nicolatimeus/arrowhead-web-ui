@@ -2,10 +2,12 @@
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="booking-status.css">
   <link rel="stylesheet" type="text/css" href="mui.min.css">
 </head>
 <body>
-  <div id="idle-pane" class="main-pane vertical-container current">
+  <div data-booking-status="unknown" id="idle-pane" class="main-pane vertical-container current">
+    <h1>Charging station idle</h1>
     <div id="idle-top-pane" class="horizontal-container">
       <div id="schematic-diagram" class="mui-panel">
         Schematic diagram
@@ -16,13 +18,11 @@
     <div id="idle-bottom-pane" class="horizontal-container">
       <div id="idle-data" class="vertical-container">
         <ul>
-          <li id="cs-busy-message" style="display:none;">Charge in progress</li>
-          <li id="cs-idle-message">Charging station idle</li>
-          <li data-modality="t3.1.2">
-              <span id="unknown-booking-state-message" class="hidden">Unable to contact booking service!</span>
-              <span id="station-reserved-message" class="hidden">Station is reserved now, press Start recharge button to begin</span>
-              <span id="no-recharge-booked-message" class="hidden">No recharges booked</span>
-              <span id="recharge-booked-message" class="hidden">Next recharge booked at <span id="booked-recharge-time"></span></span>
+          <li data-modality="t3.1.2" id="booking-state-info">
+              <span id="unknown-booking-state-message">Unable to contact booking service!</span>
+              <span id="station-reserved-message">Station is reserved now, press Start recharge button to begin</span>
+              <span id="no-recharge-booked-message">No recharges booked</span>
+              <span id="recharge-booked-message">Next recharge booked at <span id="booked-recharge-time"></span></span>
           </li>
           <li>Storage battery SOC: <span data-metric="Storage_Battery_SOC"></span>%</li>
           <li>Available energy: <span data-metric="Energy_Out"></span> Wh</li>
@@ -34,11 +34,28 @@
         <button id="start-recharge-button" class="mui-btn mui-btn--primary">Start recharge</button>
       </div>
     </div>
+
+    <div data-modality="t3.1.2" id="user-id-dialog" class="mui-panel hidden dialog">
+      <input id="user-id-input" value="Please enter user id"></input>
+      <button id="user-id-confirm" class="mui-btn mui-btn--primary">OK</button>
+      <button id="user-id-cancel-button" class="mui-btn mui-btn--secondary">Cancel</button>
+    </div>
+
+    <div data-modality="t3.1.2" id="booking-failed-alert" class="mui-panel hidden dialog">
+      Booking request failed <button id="close-booking-failed-alert-button" class="mui-btn mui-btn--primary">OK</button>
+    </div>
+
+    <div data-modality="t3.1.2" id="charge-not-authorized-alert" class="mui-panel hidden dialog">
+      You are not allowed to recharge <button id="close-charge-not-authorized-alert-button" class="mui-btn mui-btn--primary">OK</button>
+    </div>
+
   </div>
 
-  <div data-modality="t3.1.2" id="user-id-dialog" class="mui-panel hidden">
-    <input id="user-id-input" value="Please enter user id"></input>
-    <button id="user-id-confirm" class="mui-btn mui-btn--primary">ok</button>
+  <div id="fault-dialog" class="mui-panel dialog hidden">
+    CS notified an error state:
+    <li>
+      Fault code: <span data-metric="Fault_String"></span>
+    </li>
   </div>
 
   <div id="charging-pane" class="vertical-container main-pane">

@@ -61,6 +61,9 @@ Plot.prototype.update = function () {
 }
 
 Plot.prototype.push = function (timestamp, y) {
+  if (!timestamp || !isFinite(timestamp)) return
+  if (!y || !isFinite(y)) return
+  
   if (this.timestamps.length && (timestamp - this.timestamps[0] > this.maxTimeWindow || this.timestamps.length > this.maxBufferSize)) {
     this.timestamps.splice(0, 1)
     this.y.splice(0, 1)

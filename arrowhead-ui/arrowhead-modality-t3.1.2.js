@@ -1,16 +1,18 @@
 var ArrowheadModalityT312Logic = function (control) {
   this.userIdDialog = document.getElementById('user-id-dialog')
   this.startRechargeButton = document.getElementById('start-recharge-button')
+  this.userIdCancelButton = document.getElementById('user-id-cancel-button')
   this.userIdInput = document.getElementById('user-id-input')
   this.userIdDialogConfirmButton = document.getElementById('user-id-confirm')
   this.stopRecargheButton = document.getElementById('stop-recharge-button')
-  this.noRechargeBookedMessage = document.getElementById('no-recharge-booked-message')
 
-  this.unknownBookingStateMessage = document.getElementById('unknown-booking-state-message')
-  this.rechargeBookedMessage = document.getElementById('recharge-booked-message')
+  this.idlePane = document.getElementById('idle-pane')
   this.nextBookedRechargeTime = document.getElementById('booked-recharge-time')
-  this.stationReservedMessage = document.getElementById('station-reserved-message')
-  this.noRechargeBookedMessage = document.getElementById('no-recharge-booked-message')
+
+  this.bookingFailedAlert = document.getElementById('booking-failed-alert')
+  this.bookingFailedAlertCloseButton = document.getElementById('close-booking-failed-alert-button')
+  this.chargeNotAuthorizedAlert = document.getElementById('charge-not-authorized-alert')
+  this.chargeNotAuthorizedAlertCloseButton = document.getElementById('close-charge-not-authorized-alert-button')
 
   this.bookButton = document.getElementById('book-button')
 
@@ -20,11 +22,15 @@ var ArrowheadModalityT312Logic = function (control) {
 
   this.startRechargeButton.onclick = function () {
     self.showUserIdDialog()
-    self.action = 'request_recharge'
+    self.userIdDialog.setAttribute('action', 'request_recharge')
   }
 
   this.userIdDialogConfirmButton.onclick = function () {
     self.onLogin()
+  }
+
+  this.userIdCancelButton.onclick = function () {
+    self.hideUserIdDialog()
   }
 
   this.stopRecargheButton.onclick = function () {
@@ -33,7 +39,15 @@ var ArrowheadModalityT312Logic = function (control) {
 
   this.bookButton.onclick = function () {
     self.showUserIdDialog()
-    self.action = 'book'
+    self.userIdDialog.setAttribute('action', 'book')
+  }
+
+  this.bookingFailedAlertCloseButton.onclick = function () {
+    self.hideBookingFailedAlert()
+  }
+
+  this.chargeNotAuthorizedAlertCloseButton.onclick = function () {
+    self.hideChargeNotAuthorizedAlert()
   }
 
   setInterval(function () {
@@ -45,36 +59,25 @@ var ArrowheadModalityT312Logic = function (control) {
 }
 
 ArrowheadModalityT312Logic.prototype.updateBookingInfo = function () {
-  this.unknownBookingStateMessage.classList.add('hidden')
-  this.rechargeBookedMessage.classList.add('hidden')
-  this.noRechargeBookedMessage.classList.add('hidden')
-  this.stationReservedMessage.classList.add('hidden')
-
-  this.bookButton.style.display = 'none'
-  this.startRechargeButton.style.display = 'none'
-
 
   if (!this.bookingInfo) {
-    this.unknownBookingStateMessage.classList.remove('hidden')
+    this.idlePane.setAttribute('data-booking-status', 'unknown')
     return
   }
   if (this.bookingInfo.isReservedNow) {
-    this.stationReservedMessage.classList.remove('hidden')
-    this.startRechargeButton.style.display = 'inline'
+    this.idlePane.setAttribute('data-booking-status', 'reserved')
     return
   }
   if (!this.bookingInfo.nextReservationIn) {
-    this.noRechargeBookedMessage.classList.remove('hidden')
-    this.bookButton.style.display = 'inline'
+    this.idlePane.setAttribute('data-booking-status', 'no-recharge-booked')
     return
   }
 
-  this.rechargeBookedMessage.classList.remove('hidden')
+  this.idlePane.setAttribute('data-booking-status', 'recharge-booked')
 
   var now = new Date()
   var nextRechargeTime = new Date(now.getTime() + this.bookingInfo.nextReservationIn)
   var rechargeDay = 'today'
-
 
   if (now.getDate() !== nextRechargeTime.getDate() || now.getMonth() !== nextRechargeTime.getMonth() || now.getFullYear() !== nextRechargeTime.getFullYear())
     rechargeDay = nextRechargeTime.getDate() + '/' + nextRechargeTime.getMonth() + '/' + nextRechargeTime.getFullYear()
@@ -105,20 +108,44 @@ ArrowheadModalityT312Logic.prototype.onStopRechargeRequested = function () {
   })
 }
 
+ArrowheadModalityT312Logic.prototype.showBookingFailedAlert = function () {
+  this.bookingFailedAlert.classList.remove('hidden')
+}
+
+ArrowheadModalityT312Logic.prototype.hideBookingFailedAlert = function () {
+  this.bookingFailedAlert.classList.add('hidden')
+}
+
+ArrowheadModalityT312Logic.prototype.showChargeNotAuthorizedAlert = function () {
+  this.chargeNotAuthorizedAlert.classList.remove('hidden')
+}
+
+ArrowheadModalityT312Logic.prototype.hideChargeNotAuthorizedAlert = function () {
+  this.chargeNotAuthorizedAlert.classList.add('hidden')
+}
+
 ArrowheadModalityT312Logic.prototype.onLogin = function () {
   this.hideUserIdDialog();
   var self = this
-  if (this.action === 'request_recharge') {
+  if (this.userIdDialog.getAttribute('action') === 'request_recharge') {
     checkRechargeAuthT312(this.userIdInput.value, function (obj, status) {
-      if (status == 200 && obj && obj.status === true) {
+      if (status ===  200 && obj && obj.status === true) {
         console.log('requesting to start recharge')
         control.startRechargeT312(self.userIdInput.value, 'null', function (obj, status) {
           if (Math.floor(status / 100) === 2)
             console.log('start recharge request successfully sent')
         })
+      } else {
+        self.showChargeNotAuthorizedAlert()
       }
     })
   } else {
-    reserveOTFT312(this.userIdInput.value, console.log)
+    reserveOTFT312(this.userIdInput.value, function (obj, status) {
+      if (status === 200 && obj && obj.status === true) {
+
+      } else {
+        self.showBookingFailedAlert()
+      }
+    })
   }
 }

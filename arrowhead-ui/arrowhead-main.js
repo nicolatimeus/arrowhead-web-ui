@@ -1,7 +1,6 @@
 var idleUi = document.getElementById('idle-pane')
 var chargingUi = document.getElementById('charging-pane')
-var busyMessage = document.getElementById('cs-busy-message')
-var idleMessage = document.getElementById('cs-idle-message')
+var faultDialog = document.getElementById('fault-dialog')
 
 var plot = new Plot('time-series-plot', 'Time', 'PV Power (W)', 'PV Power')
 
@@ -41,19 +40,23 @@ var showChargingUi = function() {
   idleUi.classList.remove('current')
 }
 
+var showFaultDialog = function () {
+  faultDialog.classList.remove('hidden')
+}
+
+var hideFaultDialog = function () {
+  faultDialog.classList.add('hidden')
+}
+
 var cloudClient = new CloudClient(arrowheadConfig.cloudBaseUri, arrowheadConfig.cloudCredentials)
 var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progress'])
 
 bindings.addUpdateListener(function () {
   var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
   if (bindings.metrics['Recharge_In_Progress'] === '1') {
-    busyMessage.style.display = 'inline'
-    idleMessage.style.display = 'none'
     showChargingUi()
   }
   else {
-    busyMessage.style.display = 'none'
-    idleMessage.style.display = 'inline'
     showIdleUi()
   }
   if (bindings.messageIsNew) {
@@ -62,6 +65,11 @@ bindings.addUpdateListener(function () {
       plot.push(bindings.timestamp, powerPV)
       plot.update()
     }
+  }
+  if (bindings.metrics['Fault_Flag'] === '1') {
+    showFaultDialog()
+  } else {
+    hideFaultDialog()
   }
 })
 
@@ -72,6 +80,12 @@ var control = new ArrowheadControl(controlTopicName, cloudClient)
 if (arrowheadConfig.modality === 't3.1.2') {
   modalityLogic = new ArrowheadModalityT312Logic(control)
 }
+
+/* setInterval(function () {
+  var d = new Date()
+plot.push(d, 100 + 10*Math.sin(2*Math.PI*(d.getTime())/30/1000))
+plot.update()
+}, 100) */
 
 bindings.update()
 bindings.updatePeriodically(arrowheadConfig.statusPollPeriodMs)

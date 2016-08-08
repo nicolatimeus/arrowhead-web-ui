@@ -1,5 +1,5 @@
 var checkRechargeAuthT312 = function (userId, callback) {
-var uri = arrowheadConfig.bookingProxyUri + '/evses/' + arrowheadConfig.EVSEId + '/check'
+var uri = arrowheadConfig.bookingBaseUri + '/evses/' + arrowheadConfig.EVSEId + '/check'
   var requestObj = {
     'user_id': userId,
     'tolerance': arrowheadConfig.tolerance+""
