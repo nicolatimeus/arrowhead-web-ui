@@ -64,3 +64,12 @@
   width: 10cm;
   padding: 0;
 }
+
+.mui-divider {
+  flex-grow: 0;
+}
+
+h4 {
+  font-weight: bold;
+  font-size: 150%;
+}
