@@ -1,0 +1,47 @@
+#booking-state-info span {
+  display: none;
+}
+
+[data-booking-status="unknown"] #unknown-booking-state-message {
+  display: inline;
+}
+
+[data-booking-status="reserved"] #station-reserved-message {
+  display: inline;
+}
+
+[data-booking-status="recharge-booked"] #recharge-booked-message {
+  display: inline;
+}
+
+[data-booking-status="recharge-booked"] #booked-recharge-time {
+  display: inline;
+}
+
+[data-booking-status="no-recharge-booked"] #no-recharge-booked-message {
+  display: inline;
+}
+
+#book-button, #start-recharge-button {
+  display: none;
+}
+
+[data-booking-status="no-recharge-booked"] #book-button {
+  display: inline;
+}
+
+[data-booking-status="recharge-booked"] #book-button {
+  display: inline;
+}
+
+[data-booking-status="reserved"] #start-recharge-button {
+  display: inline;
+}
+
+[data-booking-status="reserved"] #user-id-dialog[action="book"] {
+  display: none;
+}
+
+[data-booking-status]:not([data-booking-status="reserved"]) #user-id-dialog[action="request_recharge"] {
+  display: none;
+}
