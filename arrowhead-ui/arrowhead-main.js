@@ -49,7 +49,7 @@ var hideFaultDialog = function () {
 }
 
 var cloudClient = new CloudClient(arrowheadConfig.cloudBaseUri, arrowheadConfig.cloudCredentials)
-var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progress'])
+var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progress', 'Fault_String'])
 
 bindings.addUpdateListener(function () {
   var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
@@ -67,6 +67,17 @@ bindings.addUpdateListener(function () {
     }
   }
   if (bindings.metrics['Fault_Flag'] === '1') {
+    faultDialog.removeAttribute('fault-reason')
+    var faultString = parseInt(bindings.metrics['Fault_String'])
+    if (faultString === (1 << 0)) {
+      faultDialog.setAttribute('fault-reason', 'converter-fault')
+    } else if (faultString === (1 << 1)) {
+      faultDialog.setAttribute('fault-reason', 'panel-fault')
+    } else if (faultString === (1 << 2)) {
+      faultDialog.setAttribute('fault-reason', 'vehicle-fault')
+    } else if (faultString === (1 << 3)) {
+      faultDialog.setAttribute('fault-reason', 'plug-fault')
+    }
     showFaultDialog()
   } else {
     hideFaultDialog()

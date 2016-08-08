@@ -3,6 +3,7 @@
 <head>
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" type="text/css" href="booking-status.css">
+  <link rel="stylesheet" type="text/css" href="fault-alert.css">
   <link rel="stylesheet" type="text/css" href="mui.min.css">
 </head>
 <body>
@@ -17,15 +18,20 @@
     </div>
     <div id="idle-bottom-pane" class="horizontal-container">
       <div id="idle-data" class="vertical-container">
+        <h4>Booking status</h4>
+        <div class="mui-divider"></div>
         <ul>
           <li data-modality="t3.1.2" id="booking-state-info">
-              <span id="unknown-booking-state-message">Unable to contact booking service!</span>
+              <span id="unknown-booking-state-message">Contacting booking service..</span>
               <span id="station-reserved-message">Station is reserved now, press Start recharge button to begin</span>
               <span id="no-recharge-booked-message">No recharges booked</span>
               <span id="recharge-booked-message">Next recharge booked at <span id="booked-recharge-time"></span></span>
           </li>
-          <li>Storage battery SOC: <span data-metric="Storage_Battery_SOC"></span>%</li>
-          <li>Available energy: <span data-metric="Energy_Out"></span> Wh</li>
+        </ul>
+        <h4>Chraging station status</h4>
+        <div class="mui-divider"></div>
+        <ul>
+          <li>Storage battery SOC: <span data-metric="Storage_Battery_SOC"></span> %</li>
           <li>Actual PV power: <span data-metric="Power_PV"></span> W</li>
         </ul>
       </div>
@@ -53,9 +59,21 @@
 
   <div id="fault-dialog" class="mui-panel dialog hidden">
     CS notified an error state:
-    <li>
+    <div>
       Fault code: <span data-metric="Fault_String"></span>
-    </li>
+    </div>
+    <div class="fault-reason" id="converter-fault-message">
+      Recharger stopped due to converter fault
+    </div>
+    <div class="fault-reason" id="panel-fault-message">
+      Recharger stopped due to electric panel fault
+    </div>
+    <div class="fault-reason" id="vehicle-fault-message">
+      Recharger stopped due to vehicle fault
+    </div>
+    <div class="fault-reason" id="plug-fault-message">
+      Recharger stopped: beware of HV on plug
+    </div>
   </div>
 
   <div id="charging-pane" class="vertical-container main-pane">
@@ -67,18 +85,25 @@
     </div>
     <div id="charging-bottom-pane" class="horizontal-container">
       <div id="charging-left">
+        <h4>Charge time<h4>
+        <div class="mui-divider"></div>
         <ul>
-          <li>Charge Power: <span data-metric="Power_Out"></span> kW</li>
           <li data-modality="t3.1.1">Expected charge time remaining <span data-modality="t3.1.1" data-metric="Hours_to_Recharge_Estimated"></span> hours <span data-modality="t3.1.1" data-metric="Minutes_to_Recharge_Estimated"></span> minutes</li>
           <li data-modality="t3.1.2">Expected charge time remaining <span data-modality="t3.1.2" data-metric="Minutes_to_Recharge_Estimated"></span> minutes <span data-modality="t3.1.2" data-metric="Seconds_to_Recharge_Estimated"></span> seconds</li>
-          <li>Charge current: <span data-metric="I_Out"></charge-current>A</li>
-          <li>Charge voltage: <span data-metric="V_Out "></span>V</li>
+        </ul>
+        <h4>Charge info<h4>
+        <div class="mui-divider"></div>
+        <ul>
+          <li>Charge Power: <span data-metric="Power_Out"></span> kW</li>
+          <li>Charge current: <span data-metric="I_Out"></span> A</li>
+          <li>Charge voltage: <span data-metric="V_Out "></span> V</li>
         </ul>
       </div>
       <div id="charging-right">
+        <h4>Charging station status</h4>
+        <div class="mui-divider"></div>
         <ul>
           <li>Storage battery SOC: <span data-metric="Storage_Battery_SOC"></span></li></li>
-          <li>Available energy: <span data-metric="Energy_Out"></span> Wh</li>
           <li>Actual PV power: <span data-metric="Power_PV"></span></li>
         </ul>
       </div>

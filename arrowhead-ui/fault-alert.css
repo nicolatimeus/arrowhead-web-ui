@@ -1,0 +1,19 @@
+#fault-dialog .fault-reason {
+  display: none;
+}
+
+#fault-dialog[fault-reason="converter-fault"] #converter-fault-message {
+  display: block;
+}
+
+#fault-dialog[fault-reason="panel-fault"] #panel-fault-message {
+  display: block;
+}
+
+#fault-dialog[fault-reason="vehicle-fault"] #vehicle-fault-message {
+  display: block;
+}
+
+#fault-dialog[fault-reason="plug-fault"] #plug-fault-message {
+  display: block;
+}
