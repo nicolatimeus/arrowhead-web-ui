@@ -6,10 +6,13 @@ var plot = new Plot('time-series-plot', 'Time', 'PV Power (W)', 'PV Power')
 
 var configureUiForModality = function (modality) {
   var elements = document.querySelectorAll('[data-modality]')
-  elements.forEach(function (element) {
+
+  for (var i=0; i<elements.length; i++) {
+    var element = elements[i]
     if (element.getAttribute('data-modality') !== modality)
       element.style.display = 'none'
-  })
+  }
+
 }
 
 configureUiForModality(arrowheadConfig.modality)

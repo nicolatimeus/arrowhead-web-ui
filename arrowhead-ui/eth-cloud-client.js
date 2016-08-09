@@ -13,7 +13,7 @@ CloudClient.prototype.req = function(resource, data, callback) {
 }
 
 CloudClient.prototype.getLastMessageMetrics = function (topic, asset, callback) {
-  this.req('/messages/searchByAsset', {
+  this.req('/messages/searchByAsset.json', {
     asset: asset,
     limit: 1,
     offset: 0,

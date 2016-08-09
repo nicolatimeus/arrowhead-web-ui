@@ -19,7 +19,9 @@ MetricBinding.prototype.addUpdateListener = function (listener) {
 MetricBinding.prototype.detectElements = function () {
   var elementList = document.querySelectorAll('[data-metric]');
   var self = this
-  elementList.forEach(function (elm) {
+
+  for (var i=0; i<elementList.length; i++) {
+    var elm = elementList[i]
     var metricName = elm.getAttribute('data-metric')
     var elementModality = elm.getAttribute('data-modality')
     if (elementModality && elementModality !== arrowheadConfig.modality)
@@ -29,7 +31,7 @@ MetricBinding.prototype.detectElements = function () {
       (self.elements[metricName])[self.elements[metricName].length] = elm
     else
       self.elements[metricName] = [elm]
-  })
+  }
 }
 
 MetricBinding.prototype.update = function() {
