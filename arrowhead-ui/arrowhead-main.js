@@ -95,11 +95,15 @@ if (arrowheadConfig.modality === 't3.1.2') {
   modalityLogic = new ArrowheadModalityT312Logic(control)
 }
 
-/* setInterval(function () {
+/*var i = 0
+setInterval(function () {
   var d = new Date()
-plot.push(d, 100 + 10*Math.sin(2*Math.PI*(d.getTime())/30/1000))
+  plot.push(d, 100 + 10*Math.sin(2*Math.PI*(d.getTime())/1000))
+//plot.push(d, i)
+//plot.push(d, undefined)
+//i++
 plot.update()
-}, 100) */
+}, 25)*/
 
 bindings.update()
 bindings.updatePeriodically(arrowheadConfig.statusPollPeriodMs)
