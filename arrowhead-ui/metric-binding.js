@@ -19,13 +19,13 @@ MetricBinding.prototype.addUpdateListener = function (listener) {
 MetricBinding.prototype.detectElements = function () {
   var elementList = document.querySelectorAll('[data-metric]');
   var self = this
-
+  console.log(self.elements)
   for (var i=0; i<elementList.length; i++) {
     var elm = elementList[i]
     var metricName = elm.getAttribute('data-metric')
     var elementModality = elm.getAttribute('data-modality')
     if (elementModality && elementModality !== arrowheadConfig.modality)
-      return
+      continue
     self.metrics[metricName] = true
     if (self.elements[metricName])
       (self.elements[metricName])[self.elements[metricName].length] = elm

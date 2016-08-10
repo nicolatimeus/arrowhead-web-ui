@@ -77,7 +77,7 @@ CloudPayload.prototype.toXMLString = function () {
   var xml = document.implementation.createDocument(null, null)
 
   var message = xml.createElement('message')
-  message.setAttribute('xmlns', 'http://eurotech.com/edc/2.0')
+  message.setAttribute('xmlns_in', 'http://eurotech.com/edc/2.0')
   xml.appendChild(message);
 
   var xmlTopic = xml.createElement('topic')
@@ -101,5 +101,8 @@ CloudPayload.prototype.toXMLString = function () {
     metrics.appendChild(xmlMetric)
   })
 
-  return '<?xml version="1.0" encoding="UTF-8"?>' + new XMLSerializer().serializeToString(xml)
+  var resultString = '<?xml version="1.0" encoding="UTF-8"?>' + new XMLSerializer().serializeToString(xml)
+  resultString = resultString.replace('xmlns_in', 'xmlns')
+
+  return resultString
 }
