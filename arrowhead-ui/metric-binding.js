@@ -49,7 +49,7 @@ MetricBinding.prototype.update = function() {
 
       if (self.elements[metric])
         self.elements[metric].forEach(function (elm) {
-        elm.innerHTML = '{' + metric + ': ' + value + '}'
+        elm.textContent = (arrowheadConfig.metricNamesDebug) ? ('{' + metric + ': ' + value + '}') : (''+value)
       })
     })
 

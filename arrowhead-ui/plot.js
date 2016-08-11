@@ -23,7 +23,7 @@ var Plot = function (id, xlabel, ylabel, title) {
   var trace = {
     x: [],
     y: [],
-    type: 'scatter'
+    type: 'lines'
   }
   if (arrowheadConfig.lineShape == 'spline') {
     trace.line = {shape: 'spline', color: 'blue'}

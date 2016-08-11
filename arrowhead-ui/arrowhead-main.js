@@ -1,6 +1,9 @@
 var idleUi = document.getElementById('idle-pane')
 var chargingUi = document.getElementById('charging-pane')
 var faultDialog = document.getElementById('fault-dialog')
+var currentDate = document.getElementById('current-date')
+var offlineMessage = document.getElementById('charging-station-down-message')
+var lastMessageDate = null
 
 var plot = new Plot('time-series-plot', 'Time', 'PV Power (W)', 'PV Power')
 
@@ -55,6 +58,15 @@ var cloudClient = new CloudClient(arrowheadConfig.cloudBaseUri, arrowheadConfig.
 var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progress', 'Fault_String'])
 
 bindings.addUpdateListener(function () {
+  if (bindings.messageIsNew)
+    lastMessageDate = new Date(bindings.timestamp)
+
+  if (!lastMessageDate || new Date().getTime() - lastMessageDate.getTime() > 10*arrowheadConfig.statusPollPeriodMs) {
+    offlineMessage.style.display = 'flex'
+  } else {
+    offlineMessage.style.display = 'none'
+  }
+
   var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
   if (bindings.metrics['Recharge_In_Progress'] === '1') {
     showChargingUi()
@@ -94,6 +106,11 @@ var control = new ArrowheadControl(controlTopicName, cloudClient)
 if (arrowheadConfig.modality === 't3.1.2') {
   modalityLogic = new ArrowheadModalityT312Logic(control)
 }
+
+setInterval(function () {
+  var now = new Date()
+  currentDate.textContent = now.toLocaleString()
+}, 1000)
 
 /*var i = 0
 setInterval(function () {

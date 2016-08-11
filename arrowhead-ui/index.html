@@ -7,11 +7,17 @@
   <link rel="stylesheet" type="text/css" href="mui.min.css">
 </head>
 <body>
+  <div id="charging-station-down-message">
+    <h1>Charging station seems to be offline</h1>
+  </div>
   <div data-booking-status="unknown" id="idle-pane" class="main-pane vertical-container current">
-    <h1>Charging station idle</h1>
+    <div id="title" class="vertical-container">
+      <h1>Charging station idle</h1>
+      <div id="current-date"></div>
+    </div>
     <div id="idle-top-pane" class="horizontal-container">
       <div id="schematic-diagram" class="mui-panel">
-        Schematic diagram
+        <img src="schematic.jpeg" class="schematic-image"></img>
       </div>
       <div id="time-series-plot" class="mui-panel">
       </div>
@@ -22,13 +28,25 @@
         <h4>Booking status</h4>
         <div class="mui-divider"></div>
         <ul>
-          <li data-modality="t3.1.2" id="booking-state-info">
+          <li data-modality="t3.1.2" class="booking-state-info">
               <span id="unknown-booking-state-message">Contacting booking service..</span>
               <span id="station-reserved-message">Station is reserved now, press Start recharge button to begin</span>
               <span id="no-recharge-booked-message">No recharges booked</span>
               <span id="recharge-booked-message">Next recharge booked at <span id="booked-recharge-time"></span></span>
           </li>
         </ul>
+      </div>
+      <div data-modality="t3.1.1">
+      <h4>Recharge schedule</h4>
+      <div class="mui-divider"></div>
+      <ul>
+        <li data-modality="t3.1.1" class="booking-state-info">
+            <span id="unknown-booking-state-message">Contacting recharge scheduling service..</span>
+            <span id="no-recharge-booked-message">No recharges scheduled</span>
+            <span id="best-schedule-time-message">Next best time schedule at <span id="best-scheduled-recharge-time"></span></span>
+            <span id="recharge-booked-message">Next recharge scheduled at <span id="scheduled-recharge-time"></span></span>
+        </li>
+      </ul>
       </div>
         <h4>Chraging station status</h4>
         <div class="mui-divider"></div>
@@ -43,27 +61,29 @@
       </div>
     </div>
 
-    <div data-modality="t3.1.2" id="user-id-dialog" class="mui-panel hidden dialog">
-      <input id="user-id-input" value="Please enter user id"></input>
-      <button id="user-id-confirm" class="mui-btn mui-btn--primary">OK</button>
-      <button id="user-id-cancel-button" class="mui-btn mui-btn--secondary">Cancel</button>
+    <div data-modality="t3.1.2" id="user-id-dialog" class="hidden overlay">
+      <div class="mui-panel dialog">
+        <input id="user-id-input" value="Please enter user id"></input>
+        <button id="user-id-confirm" class="mui-btn mui-btn--primary">OK</button>
+        <button id="user-id-cancel-button" class="mui-btn mui-btn--secondary">Cancel</button>
+      </div>
     </div>
 
-    <div data-modality="t3.1.2" id="booking-failed-alert" class="mui-panel hidden dialog">
-      Booking request failed <button id="close-booking-failed-alert-button" class="mui-btn mui-btn--primary">OK</button>
+    <div data-modality="t3.1.2" id="booking-failed-alert" class="hidden overlay">
+      <div class="mui-panel dialog">
+        Booking request failed <button id="close-booking-failed-alert-button" class="mui-btn mui-btn--primary">OK</button>
+      </div>
     </div>
 
-    <div data-modality="t3.1.2" id="charge-not-authorized-alert" class="mui-panel hidden dialog">
+    <div data-modality="t3.1.2" id="charge-not-authorized-alert" class="hidden overlay">
+      <div class="mui-panel dialog">
       You are not allowed to recharge <button id="close-charge-not-authorized-alert-button" class="mui-btn mui-btn--primary">OK</button>
+      </div>
     </div>
 
   </div>
-
-  <div id="fault-dialog" class="mui-panel dialog hidden">
-    CS notified an error state:
-    <div>
-      Fault code: <span data-metric="Fault_String"></span>
-    </div>
+  <div id="fault-dialog" class="hidden overlay">
+  <div class="mui-panel dialog">
     <div class="fault-reason" id="converter-fault-message">
       Recharger stopped due to converter fault
     </div>
@@ -76,11 +96,15 @@
     <div class="fault-reason" id="plug-fault-message">
       Recharger stopped: beware of HV on plug
     </div>
+    <div>
+      Fault code: <span data-metric="Fault_String"></span>
+    </div>
+  </div>
   </div>
 
   <div id="charging-pane" class="vertical-container main-pane">
     <div id="charging-top-pane" class="horizontal-container">
-      Picture
+      <img src="charging.svg" class="charging-image"></img>
     </div>
     <div id="charging-message">
       Charge in progress... <button data-modality="t3.1.2" id="stop-recharge-button" class="mui-btn mui-btn--primary">Stop Recharge</button>
@@ -105,11 +129,14 @@
         <h4>Charging station status</h4>
         <div class="mui-divider"></div>
         <ul>
-          <li>Storage battery SOC: <span data-metric="Storage_Battery_SOC"></span></li></li>
-          <li>Actual PV power: <span data-metric="Power_PV"></span></li>
+          <li>Storage battery SOC: <span data-metric="Storage_Battery_SOC"></span> %</li>
+          <li>Actual PV power: <span data-metric="Power_PV"></span> W</li>
         </ul>
       </div>
     </div>
+  </div>
+  <div id="arrowhead-logo">
+    <img src="arrowhead-logo.svg" id="logo-image"></img>
   </div>
   <script src="arrowhead-config.js"></script>
   <script src="plotly-latest.min.js"></script>
