@@ -12,6 +12,36 @@ CloudClient.prototype.req = function(resource, data, callback) {
   })
 }
 
+CloudClient.prototype.subscribeToTopic = function (topic, callback) {
+
+  var self = this
+  this.req('/streams/subscribe.json', {
+    topic: topic,
+    fetch: 'metrics'
+  }, function (data, status) {
+    if (Math.floor(status / 100) !== 2 || !data) {
+      console.log('retrying')
+      self.subscribeToTopic(topic, callback)
+      return
+    }
+
+    var metricsArray
+    var timestamp
+    try {
+    timestamp = new Date(data.payload.sentOn)
+    metricsArray = data.payload.metrics.metric
+    } catch (err) {
+    console.log('stream rest api: bad response, retrying')
+    callback()
+    self.subscribeToTopic(topic, callback)
+    return
+    }
+
+    callback(metricsArray, timestamp)
+    self.subscribeToTopic(topic, callback)
+  }, {credentials: this.credentials})
+}
+
 CloudClient.prototype.getLastMessageMetrics = function (topic, asset, callback) {
   this.req('/messages/searchByAsset.json', {
     asset: asset,

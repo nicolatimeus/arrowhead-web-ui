@@ -139,3 +139,12 @@ h4 {
 #charging-top-pane {
   align-items: center;
 }
+
+.recharge-schedule-title {
+  font-size: 150%;
+  text-align: center;
+}
+
+#schedule-editor div {
+  padding: .1cm;
+}

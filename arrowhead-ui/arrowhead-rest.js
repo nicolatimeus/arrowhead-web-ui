@@ -25,3 +25,32 @@ var getStateT312 = function (callback) {
   var requestObj = {}
   doRequest(uri, requestObj, 'GET', callback)
 }
+
+var postFlexOffer = function(flexOffer, callback) {
+  var uri = arrowheadConfig.flexOfferBaseUri + '/api/flexoffers/' + arrowheadConfig.flexOfferId
+  var xmlString = serializeXml(flexOffer.toXml())
+  doRequest(uri, xmlString, 'POST', function () {
+
+  }, {
+    contentType: 'application/xml',
+    raw: true,
+    getAsString: true,
+    useBody: true
+  })
+}
+
+var getFlexOffer = function (id, callback) {
+  var uri = arrowheadConfig.flexOfferBaseUri + '/api/flexoffers/' + arrowheadConfig.flexOfferId + '/' + id
+  var requestObj = {}
+  doRequest(uri, requestObj, 'GET', function (obj, status) {
+    if (Math.floor(status / 100) !== 2) {
+      callback()
+      return
+    }
+    var xml = parseXmlString(obj)
+    callback(new FlexOffer(xml))
+  }, {
+    getAsString: true,
+    accept: 'application/xml'
+  })
+}

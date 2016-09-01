@@ -12,8 +12,21 @@ var configureUiForModality = function (modality) {
 
   for (var i=0; i<elements.length; i++) {
     var element = elements[i]
-    if (element.getAttribute('data-modality') !== modality)
+    var modalities = (element.getAttribute('data-modality') || '').split(',')
+
+    if (modalities.length && modalities[0] == '') modalities = []
+
+    if (!modalities.length) continue
+    var hide = true
+
+    modalities.forEach(function (desiredModality) {
+      if (desiredModality === modality)
+        hide = false
+    })
+
+    if (hide)
       element.style.display = 'none'
+
   }
 
 }
@@ -58,17 +71,9 @@ var cloudClient = new CloudClient(arrowheadConfig.cloudBaseUri, arrowheadConfig.
 var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progress', 'Fault_String'])
 
 bindings.addUpdateListener(function () {
-  if (bindings.messageIsNew)
-    lastMessageDate = new Date(bindings.timestamp)
-
-  if (!lastMessageDate || new Date().getTime() - lastMessageDate.getTime() > 10*arrowheadConfig.statusPollPeriodMs) {
-    offlineMessage.style.display = 'flex'
-  } else {
-    offlineMessage.style.display = 'none'
-  }
 
   var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
-  if (bindings.metrics['Recharge_In_Progress'] === '1') {
+  if (isRechargeInProgress === '1') {
     showChargingUi()
   }
   else {
@@ -99,18 +104,46 @@ bindings.addUpdateListener(function () {
   }
 })
 
-var modalityLogic;
+var onlineCheckTimer
 
-var control = new ArrowheadControl(controlTopicName, cloudClient)
+var setOnlineCheckEnabled = function (enabled) {
+  if (!enabled) {
+    offlineMessage.style.display = 'none'
+    if (onlineCheckTimer) {
+      window.clearInterval(onlineCheckTimer)
+      onlineCheckTimer = null
+    }
+    return
+  }
 
-if (arrowheadConfig.modality === 't3.1.2') {
-  modalityLogic = new ArrowheadModalityT312Logic(control)
+  offlineMessage.style.display = 'flex'
+  onlineCheckTimer = setInterval(function () {
+    var now = new Date()
+    if (bindings.messageIsNew)
+      lastMessageDate = new Date(bindings.timestamp)
+
+    if (!lastMessageDate || now.getTime() - lastMessageDate.getTime() > 10*arrowheadConfig.statusPollPeriodMs) {
+      offlineMessage.style.display = 'flex'
+    } else {
+      offlineMessage.style.display = 'none'
+    }
+    currentDate.textContent = now.toLocaleString()
+  }, 1000)
 }
 
-setInterval(function () {
-  var now = new Date()
-  currentDate.textContent = now.toLocaleString()
-}, 1000)
+var modalityLogic;
+
+var subscribeToStationTopic = function () {
+  bindings.update()
+  bindings.updatePeriodically(arrowheadConfig.statusPollPeriodMs)
+}
+
+if (arrowheadConfig.modality === 't3.1.2') {
+  var control = new ArrowheadControl(controlTopicName, cloudClient)
+  modalityLogic = new ArrowheadModalityT312Logic(control)
+} else if (arrowheadConfig.modality === 't3.1.1') {
+  modalityLogic = new ArrowheadModalityT311Logic()
+}
 
 /*var i = 0
 setInterval(function () {
@@ -120,7 +153,12 @@ setInterval(function () {
 //plot.push(d, undefined)
 //i++
 plot.update()
-}, 25)*/
+}, 100)*/
 
-bindings.update()
-bindings.updatePeriodically(arrowheadConfig.statusPollPeriodMs)
+/*var x = new Array(arrowheadConfig.graphMaxBufferSize)
+var y = new Array(arrowheadConfig.graphMaxBufferSize)
+
+for (var i=0;i<arrowheadConfig.graphMaxBufferSize;i++) {
+  x[i] = new Date(i)
+  y[i] = i
+}*/

@@ -3,6 +3,7 @@
 <head>
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" type="text/css" href="booking-status.css">
+  <link rel="stylesheet" type="text/css" href="flexoffer-status.css">
   <link rel="stylesheet" type="text/css" href="fault-alert.css">
   <link rel="stylesheet" type="text/css" href="mui.min.css">
 </head>
@@ -12,7 +13,8 @@
   </div>
   <div data-booking-status="unknown" id="idle-pane" class="main-pane vertical-container current">
     <div id="title" class="vertical-container">
-      <h1>Charging station idle</h1>
+      <h1 data-modality="t3.1.2">Arrowhead public charging station</h1>
+      <h1 data-modality="t3.1.1">Arrowhead private charging station</h1>
       <div id="current-date"></div>
     </div>
     <div id="idle-top-pane" class="horizontal-container">
@@ -37,15 +39,14 @@
         </ul>
       </div>
       <div data-modality="t3.1.1">
-      <h4>Recharge schedule</h4>
+      <h4>FlexOffer recharge schedule</h4>
       <div class="mui-divider"></div>
-      <ul>
-        <li data-modality="t3.1.1" class="booking-state-info">
-            <span id="unknown-booking-state-message">Contacting recharge scheduling service..</span>
-            <span id="no-recharge-booked-message">No recharges scheduled</span>
-            <span id="best-schedule-time-message">Next best time schedule at <span id="best-scheduled-recharge-time"></span></span>
-            <span id="recharge-booked-message">Next recharge scheduled at <span id="scheduled-recharge-time"></span></span>
-        </li>
+      <ul data-modality="t3.1.1" class="flexoffer-state-info">
+          <li id="no-recharge-booked-message">No recharges scheduled</li>
+          <li id="waiting-acceptance-message">Recharge schedule proposed to FlexOffer service, waiting for acceptance</li>
+          <li id="scheduled-recharge-time-message">Next recharge scheduled at: <span id="flexoffer-recharge-time"></span></li>
+          <li id="scheduled-recharge-duration-message">Scheduled recharge expected duration: <span id="flexoffer-recharge-duration"></span></li>
+          <li id="scheduled-recharge-available-energy-message">Scheduled recharge available energy: <span id="flexoffer-recharge-energy"></span></li>
       </ul>
       </div>
         <h4>Chraging station status</h4>
@@ -58,6 +59,9 @@
       <div data-modality="t3.1.2" id="recharge-control">
         <button id="book-button" class="mui-btn mui-btn--primary">Book</button>
         <button id="start-recharge-button" class="mui-btn mui-btn--primary">Start recharge</button>
+      </div>
+      <div data-modality="t3.1.1" id="recharge-control">
+        <button id="schedule-button" class="mui-btn mui-btn--primary">Propose new schedule</button>
       </div>
     </div>
 
@@ -78,6 +82,22 @@
     <div data-modality="t3.1.2" id="charge-not-authorized-alert" class="hidden overlay">
       <div class="mui-panel dialog">
       You are not allowed to recharge <button id="close-charge-not-authorized-alert-button" class="mui-btn mui-btn--primary">OK</button>
+      </div>
+    </div>
+
+    <div data-modality="t3.1.1" id="schedule-editor" class="overlay">
+      <div class="mui-panel dialog vertical-container">
+      <div class="recharge-schedule-title">Propose recharge schedule</div>
+      Recharge start interval
+      <div>
+        From: <input type="datetime-local"></input> to: <input type="datetime-local"></input>
+      </div>
+      <div>
+        Energy required: <input type="integer"></input> KWh
+      </div>
+      <div>
+        <button id="schedule-confirm-button" class="mui-btn mui-btn--primary">OK</button>
+      <div>
       </div>
     </div>
 
@@ -147,6 +167,9 @@
   <script src="arrowhead-rest.js"></script>
   <script src="plot.js"></script>
   <script src="arrowhead-modality-t3.1.2.js"></script>
+  <script src="xml-utils.js"></script>
+  <script src="arrowhead-flex-offer.js"></script>
+  <script src="arrowhead-modality-t3.1.1.js"></script>
   <script src="arrowhead-main.js"></script>
 </body>
 </html>

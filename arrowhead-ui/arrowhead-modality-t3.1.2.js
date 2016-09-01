@@ -1,4 +1,8 @@
 var ArrowheadModalityT312Logic = function (control) {
+
+  subscribeToStationTopic()
+  setOnlineCheckEnabled(true)
+
   this.userIdDialog = document.getElementById('user-id-dialog')
   this.startRechargeButton = document.getElementById('start-recharge-button')
   this.userIdCancelButton = document.getElementById('user-id-cancel-button')
@@ -50,8 +54,14 @@ var ArrowheadModalityT312Logic = function (control) {
     self.hideChargeNotAuthorizedAlert()
   }
 
+  this.pollInProgress = false
+
   setInterval(function () {
+    if (self.pollInProgress)
+      return
+    self.pollInProgress = true
     getStateT312(function (bookingInfo) {
+      self.pollInProgress = false
       self.bookingInfo = bookingInfo
       self.updateBookingInfo()
     })

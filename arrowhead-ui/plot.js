@@ -50,8 +50,8 @@ Plot.prototype.update = function () {
     var resultTracks = []
     var self = this
 
-    this.tracks.forEach(function (track) {
-      resultTracks[resultTracks.length] = self.subsample(track.x, track.y, subsample)
+    this.tracks.forEach(function (track, i) {
+      resultTracks[resultTracks.length] = self.subsample(track.x, track.y, subsample, true)
     })
 
     this.plotDiv.data = resultTracks
@@ -59,7 +59,7 @@ Plot.prototype.update = function () {
   Plotly.redraw(this.plotDiv)
 }
 
-Plot.prototype.subsample = function (x, y, subsample) {
+Plot.prototype.subsample = function (x, y, subsample, skipLast) {
   var result = {
     y: [],
     x: [],
@@ -69,7 +69,11 @@ Plot.prototype.subsample = function (x, y, subsample) {
     }
   }
   console.log(subsample)
-  for (var i = 0; i < x.length; i += subsample) {
+
+  var end = skipLast ? Math.floor(x.length/subsample)*subsample : x.length
+  if (!end) end = x.length
+
+  for (var i = 0; i < end; i += subsample) {
     var avgTimestampMs, avgY
     avgTimestampMs = 0
     avgY = 0

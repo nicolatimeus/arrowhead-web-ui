@@ -18,7 +18,12 @@ var doRequest = function(uri, data, method, callback, options) {
 
   uri = uri + (queryString ? queryString : '')
   xhr.open(method, uri)
-  xhr.setRequestHeader('Accept', 'application/json')
+
+  if (options.accept)
+    xhr.setRequestHeader('Accept', options.accept)
+  else if (!options.getAsString)
+    xhr.setRequestHeader('Accept', 'application/json')
+
   if (data && options.useBody) {
     if (!options.raw) {
       body = JSON.stringify(data)

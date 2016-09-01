@@ -37,10 +37,15 @@ MetricBinding.prototype.detectElements = function () {
 MetricBinding.prototype.update = function() {
   var self = this
   this.cloudClient.getLastMessageMetrics(this.topic, arrowheadConfig.targetDevice, function (metrics, timestamp) {
+    self.onMetricsUpdated(metrics, timestamp)
+  })
+}
 
+MetricBinding.prototype.onMetricsUpdated = function (metrics, timestamp) {
     if (!metrics)
       return
 
+    var self = this
     metrics.forEach(function (receivedMetric) {
       var metric = receivedMetric.name
       var value = receivedMetric.value
@@ -63,15 +68,18 @@ MetricBinding.prototype.update = function() {
     self.listeners.forEach(function (listener) {
       listener()
     })
-})
 }
 
 MetricBinding.prototype.updatePeriodically = function(periodMs) {
   this.stopUpdates();
-  var self = this;
+  /*var self = this;
   this.timer = setInterval(function () {
     self.update()
-  }, periodMs)
+  }, periodMs)*/
+  var self = this
+  this.cloudClient.subscribeToTopic(this.topic, function (metrics, timestamp) {
+    self.onMetricsUpdated(metrics, timestamp);
+  })
 }
 
 MetricBinding.prototype.stopUpdates = function () {
