@@ -1,5 +1,5 @@
 var checkRechargeAuthT312 = function (userId, callback) {
-var uri = arrowheadConfig.bookingBaseUri + '/evses/' + arrowheadConfig.EVSEId + '/check'
+var uri = arrowheadConfig.bookingProxyUri + '/evses/' + arrowheadConfig.EVSEId + '/check'
   var requestObj = {
     'user_id': userId,
     'tolerance': arrowheadConfig.tolerance+""
@@ -21,7 +21,7 @@ var reserveOTFT312 = function (userId, callback) {
 }
 
 var getStateT312 = function (callback) {
-  var uri = arrowheadConfig.bookingBaseUri + '/evses/' + arrowheadConfig.EVSEId
+  var uri = arrowheadConfig.bookingProxyUri + '/evses/' + arrowheadConfig.EVSEId
   var requestObj = {}
   doRequest(uri, requestObj, 'GET', callback)
 }
