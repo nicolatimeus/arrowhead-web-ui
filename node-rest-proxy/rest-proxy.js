@@ -22,7 +22,6 @@ var allowCrossDomain = function(req, res, next) {
 
 var forwarder = proxy(arrowheadConfig.bookingBaseUri, {
   decorateRequest: function(proxyReq, originalReq) {
-    console.log(proxyReq)
 
     translatePaths.forEach(function (path) {
       if (proxyReq.path.indexOf(path) !== -1)
