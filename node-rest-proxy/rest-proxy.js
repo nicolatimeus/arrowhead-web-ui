@@ -1,5 +1,7 @@
 var arrowheadConfig = require('./arrowhead-config.js')
 
+var translatePaths = [ '/treservations/onthefly' ]
+
 var proxy = require('express-http-proxy');
 
 var app = require('express')();
@@ -21,7 +23,12 @@ var allowCrossDomain = function(req, res, next) {
 var forwarder = proxy(arrowheadConfig.bookingBaseUri, {
   decorateRequest: function(proxyReq, originalReq) {
     console.log(proxyReq)
-    proxyReq.method = 'GET';
+
+    translatePaths.forEach(function (path) {
+      if (proxyReq.path.indexOf(path) !== -1)
+        proxyReq.method = 'GET';
+    })
+
   }
 })
 
