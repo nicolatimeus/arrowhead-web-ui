@@ -1,0 +1,41 @@
+#flexoffer-pane li {
+  display: none;
+}
+
+#no-recharge-booked-message, #waiting-acceptance-message, #auto-start-recharge-message, #accepted-message  {
+  display: none;
+}
+
+[data-booking-status="unknown"] #no-recharge-booked-message {
+  display: block;
+}
+
+[data-booking-status="no-recharge-booked"] #no-recharge-booked-message {
+  display: block;
+}
+
+[data-booking-status="schedule-proposed"] #waiting-acceptance-message {
+  display: block;
+}
+[data-booking-status="schedule-accepted"]  #accepted-message {
+  display: block;
+}
+
+[data-booking-status="schedule-proposed"] #station-average-power-message,
+[data-booking-status="schedule-proposed"] #flexoffer-proposed-min-start-time-message,
+[data-booking-status="schedule-proposed"] #flexoffer-proposed-max-start-time-message,
+[data-booking-status="schedule-proposed"] #flexoffer-duration-message,
+[data-booking-status="schedule-proposed"] #flexoffer-available-energy-message {
+  display: list-item;
+}
+
+[data-booking-status="schedule-accepted"] #station-average-power-message,
+[data-booking-status="schedule-accepted"] #flexoffer-scheduled-time-message,
+[data-booking-status="schedule-accepted"] #flexoffer-duration-message,
+[data-booking-status="schedule-accepted"] #flexoffer-available-energy-message  {
+  display: list-item;
+}
+
+[data-booking-status="schedule-accepted"] #auto-start-recharge-message {
+  display: block;
+}

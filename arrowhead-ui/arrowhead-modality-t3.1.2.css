@@ -45,3 +45,11 @@
 [data-booking-status]:not([data-booking-status="reserved"]) #user-id-dialog[action="request_recharge"] {
   display: none;
 }
+
+#user-id-dialog:not([action="book"]) #otf-header {
+  display: none;
+}
+
+#user-id-dialog[action="book"] #start-recharge-header {
+  display: none;
+}

@@ -7,12 +7,42 @@
   padding: .2cm;
 }
 
+.data-pane div, .data-pane li {
+  font-size: 2.5vh;
+}
+
+.data-pane h3 {
+  font-size: 3.3vh;
+}
+
+#idle-pane .data-pane div,#idle-pane .data-pane li {
+  font-size: 2.2vh;
+}
+
+#idle-pane .data-pane h3 {
+  font-size: 3vh;
+}
+
+
+[data-metric], .metric {
+  font-weight: bold;
+}
+
+[data-metric], .metric {
+  color: blue;
+}
+
+li, #flexoffer-pane div {
+  font-size: 0.45cm;
+}
+
 .vertical-container {
   flex-direction: column;
 }
 
 .horizontal-container {
   flex-direction: row;
+  justify-content: space-around;
 }
 
 .horizontal-container *, .vertical-container * {
@@ -32,10 +62,6 @@
   height: 10cm
 }
 
-#idle-data {
-  flex-grow: 3;
-}
-
 #idle-pane, #charging-pane, body {
   height: 100vh;
 }
@@ -44,8 +70,12 @@
   margin-left: 10%;
 }
 
-#charging-top-pane {
-  flex-grow: 4
+#idle-data {
+  align-items: center;
+}
+
+#idle-data button {
+  flex-grow: 0;
 }
 
 #charging-message {
@@ -64,6 +94,10 @@
 }
 
 .dialog {
+  border-radius: 0.2cm;
+}
+
+.dialog {
   position: fixed;
   opacity: 1;
   top: 40%;
@@ -71,8 +105,10 @@
 }
 
 #time-series-plot {
-  width: 10cm;
   padding: 0;
+  margin: 0;
+  border: 0;
+  min-width: 50vw;
 }
 
 #title * {
@@ -80,6 +116,9 @@
   text-align: center;
 }
 
+#title h1 {
+  font-size: 5vh;
+}
 
 .mui-divider {
   flex-grow: 0;
@@ -95,8 +134,8 @@ h4 {
   heigth: 3cm;
   background-color: blue;
   position: fixed;
-  bottom: 5%;
-  right: 5%;
+  top: 2%;
+  right: 2%;
   padding: 1%;
   z-index: 3;
   border-radius: 0.1cm;
@@ -126,15 +165,22 @@ h4 {
   height: 8cm;
 }
 
-.schematic-image {
-  width: 35vw;
-  align-self: center;
+.wrapper {
+  padding: 0.2cm;
+  float:right;
+  height:auto;
+  overflow: hidden;
+  text-align: center;
 }
 
-#schematic-diagram {
-  display: flex;
-  align-items: center;
+.schematic-image {
+  align-self: center;
+  border: solid 1px #AAAAAA;
+  box-shadow: 0.1cm 0.1cm 5px #AAAAAA;
+  max-height: 100%;
+  max-width: 100%;
 }
+
 
 #charging-top-pane {
   align-items: center;
@@ -145,6 +191,107 @@ h4 {
   text-align: center;
 }
 
-#schedule-editor div {
-  padding: .1cm;
+.editor-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+
+input[data-valid="false"] {
+  border-color: red;
+}
+
+input[type="datetime-local"] {
+ width: 20vw
+}
+
+#start-recharge-button {
+  background-color: #689F38
+}
+
+#recharge-control {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+#start-recharge-button {
+  flex-grow: 0;
+}
+
+#current-date {
+font-size: 3vh;
+}
+
+#user-id-dialog h1, #user-id-dialog div, #schedule-editor div {
+  margin: 0.2cm;
+  margin-top: 0.2cm;
+  margin-bottom: 0.2cm;
+  text-align: center;
+}
+
+#user-id-dialog input {
+  width: 100%;
+  display: block;
+}
+
+#user-id-dialog input, #schedule-editor input {
+  font-weight: bold;
+}
+
+#fullscreen-overlay {
+  position: fixed;
+  top: 0.1cm;
+  left: 0.1cm;
+  z-index: 3;
+}
+
+h1 {
+  font-weight: bold;
+}
+
+#idle-top-pane {
+  max-height: 40vh;
+}
+
+#idle-bottom-pane {
+  max-height: 35vh;
+}
+
+#auto-start-recharge-message {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#flexoffer-pane, #station-status {
+  flex-grow: 0;
+  align-items: center;
+  width: 45vw;
+}
+
+#idle-bottom-pane {
+  text-align: center;
+}
+
+.data-pane {
+  text-align: left;
+}
+
+.dialog {
+  font-size: 2vh;
+}
+
+.dialog h2 {
+  .font-size 2.3vh;
+}
+
+#charging-top-pane {
+  flex-grow: 3;
+}
+
+.booking-info {
+  text-align: center;
 }

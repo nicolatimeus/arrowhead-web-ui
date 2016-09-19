@@ -1,7 +1,9 @@
 var ArrowheadModalityT312Logic = function (control) {
 
   subscribeToStationTopic()
-  setOnlineCheckEnabled(true)
+  setOnlineCheckEnabled(false)
+
+  document.getElementById('evse-id').textContent = arrowheadConfig.EVSEId
 
   this.userIdDialog = document.getElementById('user-id-dialog')
   this.startRechargeButton = document.getElementById('start-recharge-button')
@@ -87,18 +89,8 @@ ArrowheadModalityT312Logic.prototype.updateBookingInfo = function () {
 
   var now = new Date()
   var nextRechargeTime = new Date(now.getTime() + this.bookingInfo.nextReservationIn)
-  var rechargeDay = 'today'
 
-  if (now.getDate() !== nextRechargeTime.getDate() || now.getMonth() !== nextRechargeTime.getMonth() || now.getFullYear() !== nextRechargeTime.getFullYear())
-    rechargeDay = nextRechargeTime.getDate() + '/' + nextRechargeTime.getMonth() + '/' + nextRechargeTime.getFullYear()
-
-  var nextRechargeMinutes = nextRechargeTime.getMinutes()
-
-  if (nextRechargeMinutes < 10) {
-    nextRechargeMinutes = '0' + nextRechargeMinutes
-  }
-
-  this.nextBookedRechargeTime.innerHTML = nextRechargeTime.getHours() + ':' + nextRechargeMinutes + ' of ' + rechargeDay
+  this.nextBookedRechargeTime.innerHTML = formatDateForUi(nextRechargeTime)
 }
 
 ArrowheadModalityT312Logic.prototype.showUserIdDialog = function () {

@@ -1,11 +1,22 @@
+webshim.polyfill('forms-ext')
+
 var idleUi = document.getElementById('idle-pane')
 var chargingUi = document.getElementById('charging-pane')
 var faultDialog = document.getElementById('fault-dialog')
 var currentDate = document.getElementById('current-date')
 var offlineMessage = document.getElementById('charging-station-down-message')
-var lastMessageDate = null
+var fullscreenButton = document.getElementById('fullscreen-button')
 
-var plot = new Plot('time-series-plot', 'Time', 'PV Power (W)', 'PV Power')
+var lastMessageDate = null
+var isFullscreen = false
+
+fullscreenButton.onclick = function () {
+  if (!document.mozFullScreenElement) {
+    document.documentElement.mozRequestFullScreen()
+  } else {
+    document.mozCancelFullScreen()
+  }
+}
 
 var configureUiForModality = function (modality) {
   var elements = document.querySelectorAll('[data-modality]')
@@ -28,6 +39,15 @@ var configureUiForModality = function (modality) {
       element.style.display = 'none'
 
   }
+
+  var link = document.createElement('link')
+  link.setAttribute('rel', 'stylesheet')
+  link.setAttribute('type', 'text/css')
+  link.setAttribute('href', 'arrowhead-modality-' + modality + '.css')
+
+  console.log(link)
+
+  document.getElementsByTagName('head')[0].appendChild(link)
 
 }
 
@@ -70,38 +90,45 @@ var hideFaultDialog = function () {
 var cloudClient = new CloudClient(arrowheadConfig.cloudBaseUri, arrowheadConfig.cloudCredentials)
 var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progress', 'Fault_String'])
 
-bindings.addUpdateListener(function () {
+var plot
 
-  var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
-  if (isRechargeInProgress === '1') {
-    showChargingUi()
-  }
-  else {
-    showIdleUi()
-  }
-  if (bindings.messageIsNew) {
-    var powerPV = bindings.metrics['Power_PV']
-    if (powerPV) {
-      plot.push(bindings.timestamp, powerPV)
-      plot.update()
+var interval = setInterval( function () {
+  plot= new Plot('time-series-plot', 'Time', 'PV Power (W)', 'PV Power')
+
+  bindings.addUpdateListener(function () {
+
+    var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
+    if (isRechargeInProgress === '1') {
+      showChargingUi()
     }
-  }
-  if (bindings.metrics['Fault_Flag'] === '1') {
-    faultDialog.removeAttribute('fault-reason')
-    var faultString = parseInt(bindings.metrics['Fault_String'])
-    if (faultString === (1 << 0)) {
-      faultDialog.setAttribute('fault-reason', 'converter-fault')
-    } else if (faultString === (1 << 1)) {
-      faultDialog.setAttribute('fault-reason', 'panel-fault')
-    } else if (faultString === (1 << 2)) {
-      faultDialog.setAttribute('fault-reason', 'vehicle-fault')
-    } else if (faultString === (1 << 3)) {
-      faultDialog.setAttribute('fault-reason', 'plug-fault')
+    else {
+      showIdleUi()
     }
-    showFaultDialog()
-  } else {
-    hideFaultDialog()
-  }
+    if (bindings.messageIsNew) {
+      var powerPV = bindings.metrics['Power_PV']
+      if (powerPV) {
+        plot.push(bindings.timestamp, powerPV)
+        plot.update()
+      }
+    }
+    if (bindings.metrics['Fault_Flag'] === '1') {
+      faultDialog.removeAttribute('fault-reason')
+      var faultString = parseInt(bindings.metrics['Fault_String'])
+      if (faultString === (1 << 0)) {
+        faultDialog.setAttribute('fault-reason', 'converter-fault')
+      } else if (faultString === (1 << 1)) {
+        faultDialog.setAttribute('fault-reason', 'panel-fault')
+      } else if (faultString === (1 << 2)) {
+        faultDialog.setAttribute('fault-reason', 'vehicle-fault')
+      } else if (faultString === (1 << 3)) {
+        faultDialog.setAttribute('fault-reason', 'plug-fault')
+      }
+      showFaultDialog()
+    } else {
+      hideFaultDialog()
+    }
+  })
+  clearInterval(interval)
 })
 
 var onlineCheckTimer
@@ -127,8 +154,7 @@ var setOnlineCheckEnabled = function (enabled) {
     } else {
       offlineMessage.style.display = 'none'
     }
-    currentDate.textContent = now.toLocaleString()
-  }, 1000)
+  }, 5000)
 }
 
 var modalityLogic;
@@ -142,8 +168,13 @@ if (arrowheadConfig.modality === 't3.1.2') {
   var control = new ArrowheadControl(controlTopicName, cloudClient)
   modalityLogic = new ArrowheadModalityT312Logic(control)
 } else if (arrowheadConfig.modality === 't3.1.1') {
-  modalityLogic = new ArrowheadModalityT311Logic()
+  var control = new ArrowheadControl(controlTopicName, cloudClient)
+  modalityLogic = new ArrowheadModalityT311Logic(control)
 }
+
+var dateTime = setInterval(function () {
+  currentDate.textContent = new Date().toLocaleString()
+}, 1000)
 
 /*var i = 0
 setInterval(function () {

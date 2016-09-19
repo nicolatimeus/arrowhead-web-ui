@@ -29,9 +29,7 @@ var getStateT312 = function (callback) {
 var postFlexOffer = function(flexOffer, callback) {
   var uri = arrowheadConfig.flexOfferBaseUri + '/api/flexoffers/' + arrowheadConfig.flexOfferId
   var xmlString = serializeXml(flexOffer.toXml())
-  doRequest(uri, xmlString, 'POST', function () {
-
-  }, {
+  doRequest(uri, xmlString, 'POST', callback, {
     contentType: 'application/xml',
     raw: true,
     getAsString: true,
@@ -48,6 +46,12 @@ var getFlexOffer = function (id, callback) {
       return
     }
     var xml = parseXmlString(obj)
+
+    if (!xml) {
+      callback(null)
+      return
+    }
+
     callback(new FlexOffer(xml))
   }, {
     getAsString: true,

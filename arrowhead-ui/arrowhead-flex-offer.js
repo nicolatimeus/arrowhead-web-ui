@@ -4,13 +4,15 @@ var FlexOffer = function (xml) {
     return
   }
 
+  this.proposedMaxEnergyKw = 0
+
   this.data = {
     $tag: 'flexOffer',
     state: 'Initial',
     offeredById: arrowheadConfig.flexOfferId,
     durationSeconds: 0,
     assignmentBeforeDurationSeconds: 0,
-    numSecondsPerInterval: 15*60,
+    numSecondsPerInterval: arrowheadConfig.flexOfferIntervalDurationSeconds,
     id: 1,
     $children: [
       {
@@ -71,6 +73,7 @@ FlexOffer.prototype.addSlice = function ( durationIntervals,
 
   this.addChild(slice)
   this.addToDuration(slice.durationSeconds)
+  this.proposedMaxEnergyKw += energyConstraint[1]
 
 }
 
@@ -137,6 +140,10 @@ FlexOffer.prototype.setStartAfterTime = function (date) {
   this.data.startAfterTime = this.fix(date)
 }
 
+FlexOffer.prototype.getStartAfterTime = function () {
+  return this.data.startAfterTime
+}
+
 FlexOffer.prototype.setAssignmentBeforeTime = function (date) {
   this.data.assignmentBeforeTime = this.fix(date)
 }
@@ -145,8 +152,30 @@ FlexOffer.prototype.setStartBeforeTime = function (date) {
   this.data.startBeforeTime = this.fix(date)
 }
 
+FlexOffer.prototype.getStartBeforeTime = function () {
+  return this.data.startBeforeTime
+}
+
 FlexOffer.prototype.isAssigned = function () {
   return this.data.state === 'Assigned'
+}
+
+FlexOffer.prototype.getTotalEnergy = function () {
+  var schedule = this.getSchedule()
+
+  if (!schedule) {
+    return this.proposedMaxEnergyKw
+  }
+
+
+  console.log(schedule)
+  var totalEnergy = 0
+
+  schedule.slices.forEach(function (slice) {
+    totalEnergy += slice
+  })
+
+  return totalEnergy
 }
 
 FlexOffer.prototype.getSchedule = function () {
@@ -176,9 +205,8 @@ FlexOffer.prototype.getSchedule = function () {
       continue
 
     result.slices[result.slices.length] = parseInt(child['$textContent'])
-  }
 
-  result.durationSeconds = result.slices.length*this.data.numSecondsPerInterval
+  }
 
   return result
 }
