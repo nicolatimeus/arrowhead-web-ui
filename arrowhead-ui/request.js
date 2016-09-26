@@ -15,6 +15,8 @@ var doRequest = function(uri, data, method, callback, options) {
 
   if (data && !options.useBody)
       queryString = genQueryString(data)
+  if (options.queryParams)
+      queryString = genQueryString(options.queryParams)
 
   uri = uri + (queryString ? queryString : '')
   xhr.open(method, uri)

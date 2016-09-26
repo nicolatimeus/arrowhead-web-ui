@@ -83,7 +83,10 @@ CloudClient.prototype.publish = function (payload, callback) {
     credentials: this.credentials,
     useBody: true,
     contentType: 'application/xml',
-    raw: true
+    raw: true,
+    queryParams: {
+      qos: '2'
+    }
   })
 }
 

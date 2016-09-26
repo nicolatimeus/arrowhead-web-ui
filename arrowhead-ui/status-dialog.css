@@ -1,0 +1,34 @@
+#status-dialog .dialog {
+  text-align: center;
+  width: 35vw;
+}
+
+#status-dialog[data-status="idle"] {
+  display: none;
+}
+
+#status-dialog:not([data-status="sending-booking-req"]) #booking-status {
+  display: none;
+}
+
+#status-dialog[data-status="sending-booking-req"] #start-recharge-status {
+  display: none
+}
+
+#status-dialog:not([data-status="sending-request"]) #sending-request-message {
+  display: none;
+}
+
+#status-dialog:not([data-status="request-sent"]) #request-sent-message-dbg {
+  display: none;
+}
+
+#status-dialog:not([data-status="request-received"]) #request-received-message-dbg {
+  display: none;
+}
+
+#status-dialog progress {
+  padding-left: 10%;
+  width: 80%;
+  padding-right: 10%;
+}

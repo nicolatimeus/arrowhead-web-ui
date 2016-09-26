@@ -18,6 +18,14 @@ fullscreenButton.onclick = function () {
   }
 }
 
+var statusDialog = document.getElementById('status-dialog')
+statusDialogHideButton = document.getElementById('status-dialog-cancel-button')
+
+
+statusDialogHideButton.onclick = function () {
+  statusDialog.setAttribute('data-status', 'idle')
+}
+
 var configureUiForModality = function (modality) {
   var elements = document.querySelectorAll('[data-modality]')
 
@@ -88,17 +96,21 @@ var hideFaultDialog = function () {
 }
 
 var cloudClient = new CloudClient(arrowheadConfig.cloudBaseUri, arrowheadConfig.cloudCredentials)
-var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progress', 'Fault_String'])
+var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progress', 'Fault_String', 'Recharge_Control_Status'])
 
 var plot
 
 var interval = setInterval( function () {
-  plot= new Plot('time-series-plot', 'Time', 'PV Power (W)', 'PV Power')
-
+  if (arrowheadConfig.graphBackend === 'canvas') {
+    plot = new CanvasPlot('time-series-plot', 'Time', 'PV Power (W)', 'PV Power')
+  } else {
+    plot = new Plot('time-series-plot', 'Time', 'PV Power (W)', 'PV Power')
+  }
   bindings.addUpdateListener(function () {
 
     var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
     if (isRechargeInProgress === '1') {
+      statusDialog.setAttribute('data-status', 'idle')
       showChargingUi()
     }
     else {
@@ -110,6 +122,9 @@ var interval = setInterval( function () {
         plot.push(bindings.timestamp, powerPV)
         plot.update()
       }
+    }
+    if (bindings.metrics['Recharge_Control_Status'] === 'RECHARGE_STARTING' && statusDialog.getAttribute('data-status') === 'request-sent') {
+      statusDialog.setAttribute('data-status', 'request-received')
     }
     if (bindings.metrics['Fault_Flag'] === '1') {
       faultDialog.removeAttribute('fault-reason')
@@ -145,11 +160,7 @@ var setOnlineCheckEnabled = function (enabled) {
 
   offlineMessage.style.display = 'flex'
   onlineCheckTimer = setInterval(function () {
-    var now = new Date()
-    if (bindings.messageIsNew)
-      lastMessageDate = new Date(bindings.timestamp)
-
-    if (!lastMessageDate || now.getTime() - lastMessageDate.getTime() > 10*arrowheadConfig.statusPollPeriodMs) {
+    if (!bindings.messageIsNew) {
       offlineMessage.style.display = 'flex'
     } else {
       offlineMessage.style.display = 'none'
@@ -175,21 +186,3 @@ if (arrowheadConfig.modality === 't3.1.2') {
 var dateTime = setInterval(function () {
   currentDate.textContent = new Date().toLocaleString()
 }, 1000)
-
-/*var i = 0
-setInterval(function () {
-  var d = new Date()
-  plot.push(d, 100 + 10*Math.sin(2*Math.PI*(d.getTime())/1000))
-//plot.push(d, i)
-//plot.push(d, undefined)
-//i++
-plot.update()
-}, 100)*/
-
-/*var x = new Array(arrowheadConfig.graphMaxBufferSize)
-var y = new Array(arrowheadConfig.graphMaxBufferSize)
-
-for (var i=0;i<arrowheadConfig.graphMaxBufferSize;i++) {
-  x[i] = new Date(i)
-  y[i] = i
-}*/

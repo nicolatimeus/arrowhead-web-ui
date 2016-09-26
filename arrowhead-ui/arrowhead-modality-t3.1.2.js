@@ -103,7 +103,7 @@ ArrowheadModalityT312Logic.prototype.hideUserIdDialog = function() {
 }
 
 ArrowheadModalityT312Logic.prototype.onStopRechargeRequested = function () {
-  console.log('requesting to stop recharge')
+  statusDialog.setAttribute('data-status', 'stopping-recharge')
   control.stopRechargeT312(this.userIdInput.value, 'null', function (obj, status) {
     if (Math.floor(status / 100) === 2)
       console.log('stop recharge request successfully sent')
@@ -130,22 +130,37 @@ ArrowheadModalityT312Logic.prototype.onLogin = function () {
   this.hideUserIdDialog();
   var self = this
   if (this.userIdDialog.getAttribute('action') === 'request_recharge') {
+
+    statusDialog.setAttribute('data-status', 'sending-booking-req')
+
     checkRechargeAuthT312(this.userIdInput.value, function (obj, status) {
+
       if (status ===  200 && obj && obj.status === true) {
-        console.log('requesting to start recharge')
+
+        statusDialog.setAttribute('data-status', 'sending-request')
+
         control.startRechargeT312(self.userIdInput.value, 'null', function (obj, status) {
-          if (Math.floor(status / 100) === 2)
-            console.log('start recharge request successfully sent')
+
+          if (Math.floor(status / 100) === 2) {
+
+            statusDialog.setAttribute('data-status', 'request-sent')
+
+          }
         })
-      } else {
-        self.showChargeNotAuthorizedAlert()
-      }
-    })
-  } else {
-    reserveOTFT312(this.userIdInput.value, function (obj, status) {
-      if (status === 200 && obj && obj.status === true) {
 
       } else {
+
+        self.showChargeNotAuthorizedAlert()
+
+      }
+
+    })
+  } else {
+
+    statusDialog.setAttribute('data-status', 'sending-booking-req')
+    reserveOTFT312(this.userIdInput.value, function (obj, status) {
+      statusDialog.setAttribute('data-status', 'idle')
+      if (status !== 200 || !obj || obj.status !== true) {
         self.showBookingFailedAlert()
       }
     })

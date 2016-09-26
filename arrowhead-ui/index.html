@@ -6,6 +6,8 @@
   <link rel="stylesheet" type="text/css" href="fault-alert.css">
   <link rel="stylesheet" type="text/css" href="mui.min.css">
   <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="plot-canvas.css">
+  <link rel="stylesheet" type="text/css" href="status-dialog.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="jquery-3.1.0.min.js"></script>
   <script src="shims/polyfiller.js"></script>
@@ -86,6 +88,22 @@
           <div>Please enter your user id in order to start a recharge</div>
         </div> <input id="user-id-input" value="Please enter user id"></input> <button id="user-id-confirm" class="mui-btn mui-btn--primary mui-btn--large">OK</button> <button id="user-id-cancel-button" class="mui-btn mui-btn--large">Cancel</button> </div>
     </div>
+    <div id="status-dialog" data-status="idle" class="overlay">
+      <div class="mui-panel dialog">
+        <div data-modality="t3.1.2" id="booking-status">
+          <h2>Contacting Booking Service</h2>
+          <progress></progress>
+          <div>Sending request to booking service</div>
+        </div>
+        <div id="start-recharge-status">
+          <h2>Starting recharge</h2>
+          <progress></progress>
+          <div id="sending-request-message">Sending start recharge request</div>
+          <div id="request-sent-message-dbg">Start recharge request sent</div>
+          <div id="request-received-message-dbg">Charging station is starting recharge</div>
+        </div>
+      <button id="status-dialog-cancel-button" class="mui-btn mui-btn--large">Hide</button> </div>
+  </div>
     <div data-modality="t3.1.2" id="booking-failed-alert" class="hidden overlay">
       <div class="mui-panel dialog"> Booking request failed <button id="close-booking-failed-alert-button" class="mui-btn mui-btn--large">OK</button> </div>
     </div>
@@ -130,8 +148,9 @@
         <div class="mui-divider"></div>
         <ul>
           <li>Charge Power: <span data-metric="Power_Out"></span> <span class="metric">W</span></li>
-          <li>Charge current: <span data-metric="I_Out"></span> <span class="metric">A</span></li>
-          <li>Charge voltage: <span data-metric="V_Out "></span> <span class="metric">V</span></li>
+          <li>Charge Current: <span data-metric="I_Out"></span> <span class="metric">A</span></li>
+          <li>Charge Voltage: <span data-metric="V_Out "></span> <span class="metric">V</span></li>
+          <li>Charge Output Energy: <span data-metric="Energy_Out"></span> <span class="metric">Wh</span></li>
         </ul>
       </div>
       <div id="charging-right" class="data-pane">
@@ -156,6 +175,7 @@
   <script src="metric-binding.js"></script>
   <script src="arrowhead-rest.js"></script>
   <script src="plot.js"></script>
+  <script src="plot-canvas.js"></script>
   <script src="arrowhead-modality-t3.1.2.js"></script>
   <script src="xml-utils.js"></script>
   <script src="arrowhead-flex-offer.js"></script>
