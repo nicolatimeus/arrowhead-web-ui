@@ -94,7 +94,7 @@ ArrowheadModalityT312Logic.prototype.updateBookingInfo = function () {
 }
 
 ArrowheadModalityT312Logic.prototype.showUserIdDialog = function () {
-  this.userIdInput.value = "Please enter user id"
+  this.userIdInput.value = ""
   this.userIdDialog.classList.remove('hidden')
 }
 

@@ -15,7 +15,14 @@ var CanvasPlot = function (id, xlabel, ylabel, title) {
   this.context.mozImageSmoothingEnabled = false
   this.context.imageSmoothingEnabled = false
 
+  this.overlayCanvas = document.createElement('canvas')
+  this.overlayCanvas.setAttribute('width', arrowheadConfig.graphCanvasWidth)
+  this.overlayCanvas.setAttribute('height', arrowheadConfig.graphCanvasHeight)
+  this.overlayCanvas.classList.add('graph-overlay-canvas')
+
   this.plotWrapper.appendChild(this.canvas)
+  this.plotWrapper.appendChild(this.overlayCanvas)
+
   this.plotDiv.appendChild(this.plotWrapper)
 
   this.context.strokeStyle = 'blue'
@@ -35,6 +42,7 @@ var CanvasPlot = function (id, xlabel, ylabel, title) {
   this.translateWinSize = arrowheadConfig.graphCanvasWindowMaxHours*1000*60*60
 
   this.initLabels()
+  this.drawOverlayCanvas()
 
 }
 
@@ -69,7 +77,7 @@ CanvasPlot.prototype.initLabels = function () {
 
   var title = document.createElement('div')
   title.classList.add('graph-title')
-  title.textContent = this.title
+  title.textContent = this.ylabel
 
   this.plotWrapper.appendChild(title)
 }
@@ -81,12 +89,38 @@ CanvasPlot.prototype.updateXLabels = function () {
   var inc = (this.lastPoint.x - t) / arrowheadConfig.graphCanvasXLabelCount
   for (var i=0; i<arrowheadConfig.graphCanvasXLabelCount; i++) {
     var d = new Date(t)
-    this.xLabels[i].textContent = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds()
+    this.xLabels[i].textContent = formatTime(d)
     t += inc
   }
 }
 
 CanvasPlot.prototype.update = function () {
+
+}
+
+CanvasPlot.prototype.drawOverlayCanvas = function () {
+  var context = this.overlayCanvas.getContext('2d')
+
+  context.translate(0, arrowheadConfig.graphCanvasHeight)
+  context.strokeStyle = '#d3d3d3'
+
+  var pInc = arrowheadConfig.graphCanvasYLabelStep/this.yRange[1]*arrowheadConfig.graphCanvasHeight
+  var i = 1
+  for(var p = pInc; p < arrowheadConfig.graphCanvasHeight; p+=pInc) {
+    context.beginPath();
+    context.moveTo(0,-p);
+    context.lineTo(arrowheadConfig.graphCanvasWidth,-p)
+    context.stroke();
+    i++
+  }
+
+  var dx = arrowheadConfig.graphCanvasWidth/arrowheadConfig.graphCanvasXLabelCount
+  for (var i=1; i<arrowheadConfig.graphCanvasXLabelCount; i++) {
+    context.beginPath();
+    context.moveTo(i*dx,0);
+    context.lineTo(i*dx,-arrowheadConfig.graphCanvasHeight)
+    context.stroke();
+  }
 
 }
 
@@ -133,7 +167,7 @@ CanvasPlot.prototype.push = function (timestamp, y) {
   }
   this.context.translate(0, arrowheadConfig.graphCanvasHeight)
   this.context.scale(arrowheadConfig.graphCanvasWidth, -arrowheadConfig.graphCanvasHeight)
-  this.context.lineWidth=0.002;
+  this.context.lineWidth=0.003;
 
   this.context.fillRect(lastRelPoint.x, 0, 1-lastRelPoint.x, 1)
 

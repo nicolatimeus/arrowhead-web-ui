@@ -91,17 +91,16 @@ li, #flexoffer-pane div {
   width: 100%;
   height: 100%;
   background-color: rgba(0,0,0,0.5);
+  z-index: 2;
 }
 
 .dialog {
   border-radius: 0.2cm;
-}
-
-.dialog {
   position: fixed;
   opacity: 1;
   top: 40%;
   left: 30%;
+  z-index: 3;
 }
 
 #time-series-plot {
@@ -236,6 +235,7 @@ font-size: 3vh;
 #user-id-dialog input {
   width: 100%;
   display: block;
+  text-align: center;
 }
 
 #user-id-dialog input, #schedule-editor input {

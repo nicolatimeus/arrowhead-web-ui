@@ -9,6 +9,7 @@ var fullscreenButton = document.getElementById('fullscreen-button')
 
 var lastMessageDate = null
 var isFullscreen = false
+var isChargingUiShown = false
 
 fullscreenButton.onclick = function () {
   if (!document.mozFullScreenElement) {
@@ -111,10 +112,15 @@ var interval = setInterval( function () {
     var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
     if (isRechargeInProgress === '1') {
       statusDialog.setAttribute('data-status', 'idle')
+      isChargingUiShown = true
       showChargingUi()
     }
     else {
+      if (isChargingUiShown) {
+        statusDialog.setAttribute('data-status', 'idle')
+      }
       showIdleUi()
+      isChargingUiShown = false
     }
     if (bindings.messageIsNew) {
       var powerPV = bindings.metrics['Power_PV']

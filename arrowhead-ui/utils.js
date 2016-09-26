@@ -36,6 +36,18 @@ var fixDateToMultipleOf = function (date, timeSecs) {
   return new Date(d*timeSecs*1000)
 }
 
+var formatTime = function (date) {
+  var hour = date.getHours()
+  var minute = date.getMinutes()
+  var seconds = date.getSeconds()
+
+  if (hour < 10) hour = '0'+hour
+  if (minute < 10) minute = '0'+minute
+  if (seconds < 10) seconds = '0'+seconds
+
+  return hour + ':' + minute + ':' + seconds
+}
+
 var toInputDateFormat = function (date) {
 
   var month = (date.getMonth() + 1)
