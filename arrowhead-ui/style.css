@@ -1,3 +1,39 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url(https://example.com/MaterialIcons-Regular.woff) format('woff'),
+       url(https://example.com/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
 .vertical-container, .horizontal-container {
   display: flex;
   flex-direction: column;
@@ -160,10 +196,6 @@ h4 {
   align-items: center;
 }
 
-.charging-image {
-  height: 8cm;
-}
-
 .wrapper {
   padding: 0.2cm;
   float:right;
@@ -294,4 +326,41 @@ h1 {
 
 .booking-info {
   text-align: center;
+}
+
+@keyframes charging-anim {
+  0% {
+    color: #aaaaaa
+  }
+
+  50% {
+    color: #dddddd
+  }
+
+  100% {
+    color: #aaaaaa
+  }
+}
+
+.charging-image {
+  height: 8cm;
+  font-size: 8cm !important;
+  text-align: center;
+  color: grey;
+  animation: charging-anim 1s infinite;
+}
+
+#start-recharge-button {
+  height: auto;
+  padding: 0.2cm;
+}
+
+#start-recharge-button div {
+  font-size: 1.4cm;
+  vertical-align: bottom;
+}
+
+#start-recharge-button p {
+  display: block;
+  margin: 0;
 }

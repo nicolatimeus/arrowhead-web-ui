@@ -66,7 +66,7 @@
           </div><button data-modality="t3.1.1" id="schedule-button" class="mui-btn mui-btn--primary mui-btn--large">Propose new schedule</button>
       </div>
       <div id="station-status">
-        <div class="data-pane">
+        <div data-modality="t3.1.2" class="data-pane">
           <h3>Charging station status</h3>
           <div class="mui-divider"></div>
           <ul>
@@ -74,7 +74,7 @@
             <li data-modality="t3.2,t3.1.2">Current photovoltaic panel power: <span data-metric="Power_PV"></span> <span class="metric">W</span></li>
           </ul>
         </div>
-        <div id="recharge-control"> <button id="start-recharge-button" class="mui-btn mui-btn--large mui-btn--primary">Start recharge</button> </div>
+        <div id="recharge-control"> <button id="start-recharge-button" class="mui-btn mui-btn--large mui-btn--primary"><div class="material-icons start-recharge-icon">power_settings_new</div><p>Start recharge</p></button> </div>
       </div>
     </div>
     <div data-modality="t3.1.2" id="user-id-dialog" class="hidden overlay">
@@ -130,7 +130,7 @@
     </div>
   </div>
   <div id="charging-pane" class="vertical-container main-pane">
-    <div id="charging-top-pane" class="horizontal-container"> <img src="charging.svg" class="charging-image"></img>
+    <div id="charging-top-pane" class="horizontal-container"> <div class="charging-image material-icons">battery_charging_full</div>
     </div>
     <div id="charging-message">
       <h1>Charge in progress...</h1> <button id="stop-recharge-button" class="mui-btn mui-btn--danger mui-btn--large">Stop Recharge</button> </div>
@@ -153,7 +153,7 @@
           <li>Charge Output Energy: <span data-metric="Energy_Out"></span> <span class="metric">Wh</span></li>
         </ul>
       </div>
-      <div id="charging-right" class="data-pane">
+      <div  data-modality="t3.1.2"  id="charging-right" class="data-pane">
         <h3>Charging station status</h3>
         <div class="mui-divider"></div>
         <ul>

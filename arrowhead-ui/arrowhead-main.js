@@ -110,6 +110,13 @@ var initPlot = function () {
     plotSettings = arrowheadConfig.t312GraphSettings
   }
 
+  if (!plotSettings.graphEnabled) {
+    var plotDiv = document.getElementById('time-series-plot')
+    plotDiv.parentNode.removeChild(plotDiv)
+    return
+  }
+
+
   if (arrowheadConfig.graphBackend === 'canvas') {
     plot = new CanvasPlot('time-series-plot', plotSettings.xLabel, plotSettings.yLabel, plotSettings.title)
   } else {
@@ -143,7 +150,7 @@ var interval = setInterval( function () {
       showIdleUi()
       isChargingUiShown = false
     }
-    if (bindings.messageIsNew) {
+    if (bindings.messageIsNew && plotSettings.graphEnabled) {
       updatePlot()
     }
     if (bindings.metrics['Recharge_Control_Status'] === 'RECHARGE_STARTING' && statusDialog.getAttribute('data-status') === 'request-sent') {
