@@ -17,9 +17,7 @@ var Plot = function (id, xlabel, ylabel, title) {
     }
 
   }
-  if (arrowheadConfig.graphInterval !== 'auto') {
-    layout.yaxis.range = arrowheadConfig.graphInterval
-  }
+  layout.yaxis.range = plotSettings.yRange
   var trace = {
     x: [],
     y: [],

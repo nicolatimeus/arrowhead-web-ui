@@ -29,7 +29,9 @@ var CanvasPlot = function (id, xlabel, ylabel, title) {
   this.context.fillStyle='white'
   this.context.fillRect(0, 0, arrowheadConfig.graphCanvasWidth, arrowheadConfig.graphCanvasHeight)
 
-  this.yRange = arrowheadConfig.graphInterval
+  this.yRange = plotSettings.yRange
+  this.yStep = plotSettings.graphCanvasYLabelStep
+
   this.xStart = 0
   this.lastPoint = null
 
@@ -64,13 +66,13 @@ CanvasPlot.prototype.initLabels = function () {
   this.plotWrapper.appendChild(yLabelsWrapper)
 
   this.yLabels = []
-  var pInc = arrowheadConfig.graphCanvasYLabelStep/this.yRange[1]*100
+  var pInc = this.yStep/this.yRange[1]*100
   var i = 1
   for(var p = pInc; p <= 100; p+=pInc) {
     this.yLabels[i] = document.createElement('div')
     this.yLabels[i].classList.add('canvas-y-label')
     this.yLabels[i].style.bottom = p+'%'
-    this.yLabels[i].textContent = i*arrowheadConfig.graphCanvasYLabelStep
+    this.yLabels[i].textContent = i*this.yStep
     yLabelsWrapper.appendChild(this.yLabels[i])
     i++
   }
@@ -104,7 +106,7 @@ CanvasPlot.prototype.drawOverlayCanvas = function () {
   context.translate(0, arrowheadConfig.graphCanvasHeight)
   context.strokeStyle = '#d3d3d3'
 
-  var pInc = arrowheadConfig.graphCanvasYLabelStep/this.yRange[1]*arrowheadConfig.graphCanvasHeight
+  var pInc = this.yStep/this.yRange[1]*arrowheadConfig.graphCanvasHeight
   var i = 1
   for(var p = pInc; p < arrowheadConfig.graphCanvasHeight; p+=pInc) {
     context.beginPath();

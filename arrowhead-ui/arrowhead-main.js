@@ -101,12 +101,33 @@ var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progr
 
 var plot
 
-var interval = setInterval( function () {
-  if (arrowheadConfig.graphBackend === 'canvas') {
-    plot = new CanvasPlot('time-series-plot', 'Time', 'PV Power (W)', 'PV Power')
+var plotSettings
+
+var initPlot = function () {
+  if (arrowheadConfig.modality === 't3.1.1') {
+    plotSettings = arrowheadConfig.t311GraphSettings
   } else {
-    plot = new Plot('time-series-plot', 'Time', 'PV Power (W)', 'PV Power')
+    plotSettings = arrowheadConfig.t312GraphSettings
   }
+
+  if (arrowheadConfig.graphBackend === 'canvas') {
+    plot = new CanvasPlot('time-series-plot', plotSettings.xLabel, plotSettings.yLabel, plotSettings.title)
+  } else {
+    plot = new Plot('time-series-plot', plotSettings.xLabel, plotSettings.yLabel, plotSettings.title)
+  }
+}
+
+var updatePlot = function() {
+  var plottedMetric = bindings.metrics[plotSettings.metric]
+  if (plottedMetric) {
+    plot.push(bindings.timestamp, plottedMetric)
+    plot.update()
+  }
+}
+
+var interval = setInterval( function () {
+  initPlot()
+
   bindings.addUpdateListener(function () {
 
     var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
@@ -123,11 +144,7 @@ var interval = setInterval( function () {
       isChargingUiShown = false
     }
     if (bindings.messageIsNew) {
-      var powerPV = bindings.metrics['Power_PV']
-      if (powerPV) {
-        plot.push(bindings.timestamp, powerPV)
-        plot.update()
-      }
+      updatePlot()
     }
     if (bindings.metrics['Recharge_Control_Status'] === 'RECHARGE_STARTING' && statusDialog.getAttribute('data-status') === 'request-sent') {
       statusDialog.setAttribute('data-status', 'request-received')

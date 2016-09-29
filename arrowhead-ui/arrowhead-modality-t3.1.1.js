@@ -270,6 +270,7 @@ ArrowheadModalityT311Logic.prototype.onFlexOfferUpdated = function () {
 }
 
 ArrowheadModalityT311Logic.prototype.onStartRechargeRequested = function () {
+  statusDialog.setAttribute('data-status', 'sending-request')
   control.startRechargeT312('null', 'null', function (obj, status) {
     if (Math.floor(status / 100) === 2)
       console.log('start recharge request successfully sent')
