@@ -15,11 +15,6 @@ var ArrowheadModalityT312Logic = function (control) {
   this.idlePane = document.getElementById('idle-pane')
   this.nextBookedRechargeTime = document.getElementById('booked-recharge-time')
 
-  this.bookingFailedAlert = document.getElementById('booking-failed-alert')
-  this.bookingFailedAlertCloseButton = document.getElementById('close-booking-failed-alert-button')
-  this.chargeNotAuthorizedAlert = document.getElementById('charge-not-authorized-alert')
-  this.chargeNotAuthorizedAlertCloseButton = document.getElementById('close-charge-not-authorized-alert-button')
-
   this.bookButton = document.getElementById('book-button')
 
   this.control = control
@@ -46,14 +41,6 @@ var ArrowheadModalityT312Logic = function (control) {
   this.bookButton.onclick = function () {
     self.showUserIdDialog()
     self.userIdDialog.setAttribute('action', 'book')
-  }
-
-  this.bookingFailedAlertCloseButton.onclick = function () {
-    self.hideBookingFailedAlert()
-  }
-
-  this.chargeNotAuthorizedAlertCloseButton.onclick = function () {
-    self.hideChargeNotAuthorizedAlert()
   }
 
   this.pollInProgress = false
@@ -110,31 +97,16 @@ ArrowheadModalityT312Logic.prototype.onStopRechargeRequested = function () {
   })
 }
 
-ArrowheadModalityT312Logic.prototype.showBookingFailedAlert = function () {
-  this.bookingFailedAlert.classList.remove('hidden')
-}
-
-ArrowheadModalityT312Logic.prototype.hideBookingFailedAlert = function () {
-  this.bookingFailedAlert.classList.add('hidden')
-}
-
-ArrowheadModalityT312Logic.prototype.showChargeNotAuthorizedAlert = function () {
-  this.chargeNotAuthorizedAlert.classList.remove('hidden')
-}
-
-ArrowheadModalityT312Logic.prototype.hideChargeNotAuthorizedAlert = function () {
-  this.chargeNotAuthorizedAlert.classList.add('hidden')
-}
-
 ArrowheadModalityT312Logic.prototype.onLogin = function () {
   this.hideUserIdDialog();
   var self = this
   if (this.userIdDialog.getAttribute('action') === 'request_recharge') {
 
+    setStartRechargeTimer()
+
     statusDialog.setAttribute('data-status', 'sending-booking-req')
 
     checkRechargeAuthT312(this.userIdInput.value, function (obj, status) {
-
       if (status ===  200 && obj && obj.status === true) {
 
         statusDialog.setAttribute('data-status', 'sending-request')
@@ -142,27 +114,44 @@ ArrowheadModalityT312Logic.prototype.onLogin = function () {
         control.startRechargeT312(self.userIdInput.value, 'null', function (obj, status) {
 
           if (Math.floor(status / 100) === 2) {
-
             statusDialog.setAttribute('data-status', 'request-sent')
-
+            return
           }
+
+          clearStartRechargeTimer()
+          statusDialog.setAttribute('data-status', 'error-request-failed')
         })
 
-      } else {
-
-        self.showChargeNotAuthorizedAlert()
-
+        return
       }
+
+      clearStartRechargeTimer()
+
+      if (status === 403 || (obj !== null && obj.status === false)) {
+        statusDialog.setAttribute('data-status', 'error-not-authorized')
+        return
+      }
+
+      statusDialog.setAttribute('data-status', 'error-booking-failed')
 
     })
   } else {
 
     statusDialog.setAttribute('data-status', 'sending-booking-req')
     reserveOTFT312(this.userIdInput.value, function (obj, status) {
-      statusDialog.setAttribute('data-status', 'idle')
-      if (status !== 200 || !obj || obj.status !== true) {
-        self.showBookingFailedAlert()
+
+      if (status === 200 && obj && obj.status === true) {
+        statusDialog.setAttribute('data-status', 'idle')
+        return
       }
+
+      if (status === 403  || (obj !== null && obj.status === false)) {
+        statusDialog.setAttribute('data-status', 'error-not-authorized')
+        return
+      }
+
+      statusDialog.setAttribute('data-status', 'error-booking-failed')
+
     })
   }
 }

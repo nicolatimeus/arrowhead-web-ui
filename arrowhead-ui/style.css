@@ -2,11 +2,11 @@
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
   src: local('Material Icons'),
        local('MaterialIcons-Regular'),
-       url(https://example.com/MaterialIcons-Regular.woff) format('woff'),
-       url(https://example.com/MaterialIcons-Regular.ttf) format('truetype');
+       url(MaterialIcons-Regular.woff) format('woff'),
+       url(MaterialIcons-Regular.ttf) format('truetype');
 }
 
 .material-icons {
@@ -128,6 +128,10 @@ li, #flexoffer-pane div {
   height: 100%;
   background-color: rgba(0,0,0,0.5);
   z-index: 2;
+}
+
+#fault-dialog {
+    background-color: rgba(255,0,0,0.8);
 }
 
 .dialog {
@@ -258,6 +262,13 @@ font-size: 3vh;
 }
 
 #user-id-dialog h1, #user-id-dialog div, #schedule-editor div {
+  margin: 0.2cm;
+  margin-top: 0.2cm;
+  margin-bottom: 0.2cm;
+  text-align: center;
+}
+
+#fault-dialog h2, #fault-dialog div {
   margin: 0.2cm;
   margin-top: 0.2cm;
   margin-bottom: 0.2cm;

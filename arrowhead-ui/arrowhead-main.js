@@ -97,7 +97,7 @@ var hideFaultDialog = function () {
 }
 
 var cloudClient = new CloudClient(arrowheadConfig.cloudBaseUri, arrowheadConfig.cloudCredentials)
-var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progress', 'Fault_String', 'Recharge_Control_Status'])
+var bindings = new MetricBinding(cloudClient, dataTopicName, ['Recharge_In_Progress', 'Fault_String', 'Recharge_Control_Status', 'Fault_Flag'])
 
 var plot
 
@@ -132,6 +132,20 @@ var updatePlot = function() {
   }
 }
 
+var startRechargeTimeout
+
+var setStartRechargeTimer = function() {
+  startRechargeTimeout = setTimeout(function () {
+    statusDialog.setAttribute('data-status', 'error-request-failed')
+    clearTimeout(startRechargeTimeout)
+  }, 15000)
+}
+
+var clearStartRechargeTimer = function () {
+  if (startRechargeTimeout)
+    clearTimeout(startRechargeTimeout)
+}
+
 var interval = setInterval( function () {
   initPlot()
 
@@ -139,6 +153,7 @@ var interval = setInterval( function () {
 
     var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
     if (isRechargeInProgress === '1') {
+      clearStartRechargeTimer()
       statusDialog.setAttribute('data-status', 'idle')
       isChargingUiShown = true
       showChargingUi()

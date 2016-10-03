@@ -7,11 +7,15 @@
   display: none;
 }
 
+#status-dialog:not([data-status^="error"]) #error-status {
+  display: none;
+}
+
 #status-dialog:not([data-status="sending-booking-req"]) #booking-status {
   display: none;
 }
 
-#status-dialog[data-status="sending-booking-req"] #start-recharge-status {
+#status-dialog[data-status="sending-booking-req"] #start-recharge-status, #status-dialog[data-status^="error"] #start-recharge-status {
   display: none
 }
 
@@ -25,6 +29,18 @@
 
 #status-dialog:not([data-status="request-received"]) #request-received-message-dbg {
   display: none;
+}
+
+#status-dialog:not([data-status="error-booking-failed"]) #booking-failed-message {
+  display: none;
+}
+
+#status-dialog:not([data-status="error-not-authorized"]) #not-authorized-message {
+   display: none;
+}
+
+#status-dialog:not([data-status="error-request-failed"]) #request-failed-message {
+   display: none;
 }
 
 #status-dialog progress {

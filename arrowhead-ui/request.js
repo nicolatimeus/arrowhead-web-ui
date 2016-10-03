@@ -26,6 +26,8 @@ var doRequest = function(uri, data, method, callback, options) {
   else if (!options.getAsString)
     xhr.setRequestHeader('Accept', 'application/json')
 
+  xhr.timeout = options.timeout || 8000
+
   if (data && options.useBody) {
     if (!options.raw) {
       body = JSON.stringify(data)

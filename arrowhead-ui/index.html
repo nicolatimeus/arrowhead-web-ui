@@ -8,7 +8,6 @@
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" type="text/css" href="plot-canvas.css">
   <link rel="stylesheet" type="text/css" href="status-dialog.css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="jquery-3.1.0.min.js"></script>
   <script src="shims/polyfiller.js"></script>
 </head>
@@ -102,14 +101,14 @@
           <div id="request-sent-message-dbg">Start recharge request sent</div>
           <div id="request-received-message-dbg">Charging station is starting recharge</div>
         </div>
+        <div id="error-status">
+          <h2>Error</h2>
+          <div id="booking-failed-message">Failed to contact booking service</div>
+          <div id="not-authorized-message">Operation not permitted by booking service, check credentials</div>
+          <div id="request-failed-message">Failed to start recharge, please retry</div>
+        </div>
       <button id="status-dialog-cancel-button" class="mui-btn mui-btn--large">Hide</button> </div>
   </div>
-    <div data-modality="t3.1.2" id="booking-failed-alert" class="hidden overlay">
-      <div class="mui-panel dialog"> Booking request failed <button id="close-booking-failed-alert-button" class="mui-btn mui-btn--large">OK</button> </div>
-    </div>
-    <div data-modality="t3.1.2" id="charge-not-authorized-alert" class="hidden overlay">
-      <div class="mui-panel dialog"> You are not allowed to recharge <button id="close-charge-not-authorized-alert-button" class="mui-btn mui-btn--large">OK</button> </div>
-    </div>
     <div data-modality="t3.1.1" id="schedule-editor" class="overlay hidden">
       <div class="mui-panel dialog vertical-container">
         <div class="recharge-schedule-title">FlexOffer Reservation</div> Recharge start interval
@@ -121,6 +120,7 @@
     </div>
     <div id="fault-dialog" class="hidden overlay">
       <div class="mui-panel dialog">
+        <h2>Charging Station failure</h2>
         <div class="fault-reason" id="converter-fault-message"> Recharger stopped due to converter fault </div>
         <div class="fault-reason" id="panel-fault-message"> Recharger stopped due to electric panel fault </div>
         <div class="fault-reason" id="vehicle-fault-message"> Recharger stopped due to vehicle fault </div>

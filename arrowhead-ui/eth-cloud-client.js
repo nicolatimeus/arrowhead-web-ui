@@ -5,41 +5,55 @@ var CloudClient = function (baseUri, credentials) {
   this.credentials = credentials
 }
 
-CloudClient.prototype.req = function(resource, data, callback) {
+CloudClient.prototype.req = function(resource, data, callback, options) {
   var uri = this.baseUri + resource
-  doRequest(uri, data, 'GET', callback, {
+  doRequest(uri, data, 'GET', callback, options || {
     credentials: this.credentials
   })
 }
 
+var retryTimeout;
+
 CloudClient.prototype.subscribeToTopic = function (topic, callback) {
+
+  var retry = function () {
+    retryTimeout = setTimeout(function () {
+      clearTimeout(retryTimeout)
+      console.log('retrying')
+      self.subscribeToTopic(topic, callback)
+    }, 1000)
+  }
 
   var self = this
   this.req('/streams/subscribe.json', {
     topic: topic,
-    fetch: 'metrics'
+    fetch: 'metrics',
+    timeout: 30000
   }, function (data, status) {
+
     if (Math.floor(status / 100) !== 2 || !data) {
-      console.log('retrying')
-      self.subscribeToTopic(topic, callback)
+      retry()
       return
     }
 
     var metricsArray
     var timestamp
+
     try {
     timestamp = new Date(data.payload.sentOn)
     metricsArray = data.payload.metrics.metric
     } catch (err) {
     console.log('stream rest api: bad response, retrying')
-    callback()
-    self.subscribeToTopic(topic, callback)
+    retry()
     return
     }
 
     callback(metricsArray, timestamp)
     self.subscribeToTopic(topic, callback)
-  }, {credentials: this.credentials})
+  }, {
+    credentials: this.credentials,
+    timeout: 30000
+  })
 }
 
 CloudClient.prototype.getLastMessageMetrics = function (topic, asset, callback) {
@@ -67,7 +81,7 @@ CloudClient.prototype.getLastMessageMetrics = function (topic, asset, callback) 
 
     callback(metricsArray, timestamp)
 
-  }, {credentials: this.credentials})
+  })
 }
 
 CloudClient.prototype.getLastValue = function (topic, metric, callback) {
