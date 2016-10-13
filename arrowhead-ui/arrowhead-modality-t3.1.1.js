@@ -31,11 +31,11 @@ var ArrowheadModalityT311Logic = function (control) {
   document.getElementById('station-average-power').textContent = arrowheadConfig.avgChargePowerOutKw
 
   this.startRechargeButton.onclick = function () {
-    self.onStartRechargeRequested()
+    startRecharge()
   }
 
   this.stopRecargheButton.onclick = function () {
-    self.onStopRechargeRequested()
+    stopRecharge()
   }
 
   this.proposeScheduleButton.onclick = function () {
@@ -267,26 +267,6 @@ ArrowheadModalityT311Logic.prototype.onFlexOfferUpdated = function () {
     console.log('flex offer assigned')
     console.log('start at: ' + this.flexOffer.getSchedule().startTime.toLocaleString())
   }
-}
-
-ArrowheadModalityT311Logic.prototype.onStartRechargeRequested = function () {
-  statusDialog.setAttribute('data-status', 'sending-request')
-  control.startRechargeT312('null', 'null', function (obj, status) {
-    if (Math.floor(status / 100) === 2) {
-      statusDialog.setAttribute('data-status', 'request-sent')
-      return
-    }
-
-    statusDialog.setAttribute('data-status', 'error-booking-failed')
-  })
-}
-
-ArrowheadModalityT311Logic.prototype.onStopRechargeRequested = function () {
-  console.log('requesting to stop recharge')
-  control.stopRechargeT312('null', 'null', function (obj, status) {
-    if (Math.floor(status / 100) === 2)
-      console.log('stop recharge request successfully sent')
-  })
 }
 
 ArrowheadModalityT311Logic.prototype.updateFlexOfferStatusUi = function () {

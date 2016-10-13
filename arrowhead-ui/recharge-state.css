@@ -1,0 +1,29 @@
+#charging-pane[data-status="charging"] [data-recharge-status="completed"] {
+  display: none;
+}
+
+#charging-pane[data-status="completed"] [data-recharge-status="charging"] {
+  display: none;
+}
+
+@keyframes charging-anim {
+  0% {
+    color: #aaaaaa
+  }
+
+  50% {
+    color: #dddddd
+  }
+
+  100% {
+    color: #aaaaaa
+  }
+}
+
+#charging-pane[data-status="charging"] .charging-image {
+  animation: charging-anim 1s infinite;
+}
+
+#charging-pane[data-status="completed"] .charging-image {
+  color: rgb(87, 146, 34);
+}

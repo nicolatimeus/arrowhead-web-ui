@@ -8,6 +8,7 @@
   <link rel="stylesheet" type="text/css" href="style.css">
   <link rel="stylesheet" type="text/css" href="plot-canvas.css">
   <link rel="stylesheet" type="text/css" href="status-dialog.css">
+  <link rel="stylesheet" type="text/css" href="recharge-state.css">
   <script src="jquery-3.1.0.min.js"></script>
   <script src="shims/polyfiller.js"></script>
 </head>
@@ -87,28 +88,6 @@
           <div>Please enter your user id in order to start a recharge</div>
         </div> <input id="user-id-input" value=""></input> <button id="user-id-confirm" class="mui-btn mui-btn--primary mui-btn--large">OK</button> <button id="user-id-cancel-button" class="mui-btn mui-btn--large">Cancel</button> </div>
     </div>
-    <div id="status-dialog" data-status="idle" class="overlay">
-      <div class="mui-panel dialog">
-        <div data-modality="t3.1.2" id="booking-status">
-          <h2>Contacting Booking Service</h2>
-          <progress></progress>
-          <div>Sending request to booking service</div>
-        </div>
-        <div id="start-recharge-status">
-          <h2>Starting recharge</h2>
-          <progress></progress>
-          <div id="sending-request-message">Sending start recharge request</div>
-          <div id="request-sent-message-dbg">Start recharge request sent</div>
-          <div id="request-received-message-dbg">Charging station is starting recharge</div>
-        </div>
-        <div id="error-status">
-          <h2>Error</h2>
-          <div id="booking-failed-message">Failed to contact booking service</div>
-          <div id="not-authorized-message">Operation not permitted by booking service, check credentials</div>
-          <div id="request-failed-message">Failed to start recharge, please retry</div>
-        </div>
-      <button id="status-dialog-cancel-button" class="mui-btn mui-btn--large">Hide</button> </div>
-  </div>
     <div data-modality="t3.1.1" id="schedule-editor" class="overlay hidden">
       <div class="mui-panel dialog vertical-container">
         <div class="recharge-schedule-title">FlexOffer Reservation</div> Recharge start interval
@@ -129,28 +108,60 @@
       </div>
     </div>
   </div>
-  <div id="charging-pane" class="vertical-container main-pane">
+  <div id="status-dialog" data-status="idle" class="overlay">
+    <div class="mui-panel dialog">
+      <div data-modality="t3.1.2" id="booking-status">
+        <h2>Contacting Booking Service</h2>
+        <progress></progress>
+        <div>Sending request to booking service</div>
+      </div>
+      <div id="start-recharge-status">
+        <h2>Starting recharge</h2>
+        <progress></progress>
+        <div id="sending-request-message">Sending start recharge request</div>
+        <div id="request-sent-message-dbg">Start recharge request sent</div>
+        <div id="request-received-message-dbg">Charging station is starting recharge</div>
+      </div>
+      <div id="stop-recharge-status">
+        <h2>Stopping recharge</h2>
+        <progress></progress>
+        <div id="stop-request-sending-message">Sending stop recharge request</div>
+        <div id="stop-request-sent-message-dbg">Stop recharge request sent</div>
+      </div>
+      <div id="error-status">
+        <h2>Error</h2>
+        <div id="booking-failed-message">Failed to contact booking service</div>
+        <div id="not-authorized-message">Operation not permitted by booking service, check credentials</div>
+        <div id="request-failed-message">Failed to start recharge, please retry</div>
+        <div id="stop-recharge-failed-message">Failed to stop recharge, please retry</div>
+      </div>
+    <button id="status-dialog-cancel-button" class="mui-btn mui-btn--large">Hide</button> </div>
+  </div>
+  <div id="charging-pane" class="vertical-container main-pane" data-status="charging">
     <div id="charging-top-pane" class="horizontal-container"> <div class="charging-image material-icons">battery_charging_full</div>
     </div>
     <div id="charging-message">
-      <h1>Charge in progress...</h1> <button id="stop-recharge-button" class="mui-btn mui-btn--danger mui-btn--large">Stop Recharge</button> </div>
+      <h1 data-recharge-status="charging">Charge in progress...</h1> <button data-recharge-status="charging" id="stop-recharge-button" class="mui-btn mui-btn--danger mui-btn--large">Stop Recharge</button>
+      <h1 data-recharge-status="completed">Recharge completed</h1>
+    </div>
     <div id="charging-bottom-pane" class="horizontal-container">
       <div id="charging-left" class="data-pane">
-        <h3>Charge time</h3>
+        <h3 >Charge time</h3>
         <div class="mui-divider"></div>
         <ul>
-          <li data-modality="t3.1.1">Expected charge time remaining <span class="metric"><span data-modality="t3.1.1" data-metric="Hours_to_Recharge_Estimated"></span> hours <span data-modality="t3.1.1" data-metric="Minutes_to_Recharge_Estimated"></span> minutes</span>
+          <li data-recharge-status="charging" data-modality="t3.1.1">Expected charge time remaining: <span id="recharge-time-above-one-minute"><span class="metric"><span data-modality="t3.1.1" data-metric="Hours_to_Recharge_Estimated"></span> hours <span data-modality="t3.1.1" data-metric="Minutes_to_Recharge_Estimated"></span> minutes</span></span> <span id="recharge-time-below-one-minute" class="metric">less than one minute</span>
           </li>
-          <li data-modality="t3.1.2">Expected charge time remaining <span class="metric"><span data-modality="t3.1.2" data-metric="Minutes_to_Recharge_Estimated"></span> minutes <span data-modality="t3.1.2" data-metric="Seconds_to_Recharge_Estimated"></span> seconds</span>
+          <li data-recharge-status="charging" data-modality="t3.1.2">Expected charge time remaining: <span class="metric"><span data-modality="t3.1.2" data-metric="Minutes_to_Recharge_Estimated"></span> minutes <span data-modality="t3.1.2" data-metric="Seconds_to_Recharge_Estimated"></span> seconds</span>
           </li>
+          <li data-recharge-status="completed">Total charge time: <span class="metric" id="charge-total-time"></span></li>
         </ul>
         <h3>Charge info</h3>
         <div class="mui-divider"></div>
         <ul>
-          <li>Charge Power: <span data-metric="Power_Out"></span> <span class="metric">W</span></li>
-          <li>Charge Current: <span data-metric="I_Out"></span> <span class="metric">A</span></li>
-          <li>Charge Voltage: <span data-metric="V_Out "></span> <span class="metric">V</span></li>
-          <li>Charge Output Energy: <span data-metric="Energy_Out"></span> <span class="metric">Wh</span></li>
+          <li data-recharge-status="charging">Charge Power: <span data-metric="Power_Out"></span> <span class="metric">W</span></li>
+          <li data-recharge-status="charging">Charge Current: <span data-metric="I_Out"></span> <span class="metric">A</span></li>
+          <li data-recharge-status="charging">Charge Voltage: <span data-metric="V_Out "></span> <span class="metric">V</span></li>
+          <li>Charge Output Energy: <span id="charge-total-energy" data-recharge-status="completed" class="metric"></span> <span data-recharge-status="charging" data-metric="Energy_Out"></span> <span class="metric">Wh</span></li>
         </ul>
       </div>
       <div  data-modality="t3.1.2"  id="charging-right" class="data-pane">
@@ -180,6 +191,7 @@
   <script src="xml-utils.js"></script>
   <script src="arrowhead-flex-offer.js"></script>
   <script src="arrowhead-modality-t3.1.1.js"></script>
+  <script src="arrowhead-charge-common.js"></script>
   <script src="arrowhead-main.js"></script>
 </body>
 

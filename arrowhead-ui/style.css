@@ -339,26 +339,12 @@ h1 {
   text-align: center;
 }
 
-@keyframes charging-anim {
-  0% {
-    color: #aaaaaa
-  }
-
-  50% {
-    color: #dddddd
-  }
-
-  100% {
-    color: #aaaaaa
-  }
-}
-
 .charging-image {
   height: 8cm;
   font-size: 8cm !important;
   text-align: center;
   color: grey;
-  animation: charging-anim 1s infinite;
+  transition: color 0.5s;
 }
 
 #start-recharge-button {

@@ -11,23 +11,31 @@
   display: none;
 }
 
-#status-dialog:not([data-status="sending-booking-req"]) #booking-status {
+#status-dialog:not([data-status^="stop"]) #stop-recharge-status {
   display: none;
 }
 
-#status-dialog[data-status="sending-booking-req"] #start-recharge-status, #status-dialog[data-status^="error"] #start-recharge-status {
+#status-dialog:not([data-status^="start"]) #start-recharge-status {
+  display: none;
+}
+
+#status-dialog:not([data-status="start-sending-booking-req"]) #booking-status {
+  display: none;
+}
+
+#status-dialog[data-status="start-sending-booking-req"] #start-recharge-status, #status-dialog[data-status^="error"] #start-recharge-status {
   display: none
 }
 
-#status-dialog:not([data-status="sending-request"]) #sending-request-message {
+#status-dialog:not([data-status="start-request-sending"]) #sending-request-message {
   display: none;
 }
 
-#status-dialog:not([data-status="request-sent"]) #request-sent-message-dbg {
+#status-dialog:not([data-status="start-request-sent"]) #request-sent-message-dbg {
   display: none;
 }
 
-#status-dialog:not([data-status="request-received"]) #request-received-message-dbg {
+#status-dialog:not([data-status="start-request-received"]) #request-received-message-dbg {
   display: none;
 }
 
@@ -41,6 +49,18 @@
 
 #status-dialog:not([data-status="error-request-failed"]) #request-failed-message {
    display: none;
+}
+
+#status-dialog:not([data-status="stop-request-sending"]) #stop-request-sending-message {
+  display: none;
+}
+
+#status-dialog:not([data-status="stop-request-sent"]) #stop-request-sent-message-dbg {
+  display: none;
+}
+
+#status-dialog:not([data-status="error-stop-recharge-failed"]) #stop-recharge-failed-message {
+  display: none;
 }
 
 #status-dialog progress {

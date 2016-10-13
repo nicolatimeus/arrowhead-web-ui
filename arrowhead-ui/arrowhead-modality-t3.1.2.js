@@ -35,7 +35,7 @@ var ArrowheadModalityT312Logic = function (control) {
   }
 
   this.stopRecargheButton.onclick = function () {
-    self.onStopRechargeRequested()
+      stopRecharge(self.userIdInput.value)
   }
 
   this.bookButton.onclick = function () {
@@ -89,55 +89,33 @@ ArrowheadModalityT312Logic.prototype.hideUserIdDialog = function() {
     this.userIdDialog.classList.add('hidden')
 }
 
-ArrowheadModalityT312Logic.prototype.onStopRechargeRequested = function () {
-  statusDialog.setAttribute('data-status', 'stopping-recharge')
-  control.stopRechargeT312(this.userIdInput.value, 'null', function (obj, status) {
-    if (Math.floor(status / 100) === 2)
-      console.log('stop recharge request successfully sent')
-  })
-}
-
 ArrowheadModalityT312Logic.prototype.onLogin = function () {
   this.hideUserIdDialog();
   var self = this
   if (this.userIdDialog.getAttribute('action') === 'request_recharge') {
 
-    setStartRechargeTimer()
-
-    statusDialog.setAttribute('data-status', 'sending-booking-req')
+    requestRechargeStateChange(RechargeState.STARTING)
+    statusDialog.setAttribute('data-status', 'start-sending-booking-req')
 
     checkRechargeAuthT312(this.userIdInput.value, function (obj, status) {
       if (status ===  200 && obj && obj.status === true) {
-
-        statusDialog.setAttribute('data-status', 'sending-request')
-
-        control.startRechargeT312(self.userIdInput.value, 'null', function (obj, status) {
-
-          if (Math.floor(status / 100) === 2) {
-            statusDialog.setAttribute('data-status', 'request-sent')
-            return
-          }
-
-          clearStartRechargeTimer()
-          statusDialog.setAttribute('data-status', 'error-request-failed')
-        })
-
+        startRecharge(self.userIdInput.value)
         return
       }
 
-      clearStartRechargeTimer()
-
       if (status === 403 || (obj !== null && obj.status === false)) {
+        requestRechargeStateChange(RechargeState.IDLE)
         statusDialog.setAttribute('data-status', 'error-not-authorized')
         return
       }
 
+      requestRechargeStateChange(RechargeState.IDLE)
       statusDialog.setAttribute('data-status', 'error-booking-failed')
 
     })
   } else {
 
-    statusDialog.setAttribute('data-status', 'sending-booking-req')
+    statusDialog.setAttribute('data-status', 'start-sending-booking-req')
     reserveOTFT312(this.userIdInput.value, function (obj, status) {
 
       if (status === 200 && obj && obj.status === true) {

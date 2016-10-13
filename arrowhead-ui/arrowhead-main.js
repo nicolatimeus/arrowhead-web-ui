@@ -9,7 +9,6 @@ var fullscreenButton = document.getElementById('fullscreen-button')
 
 var lastMessageDate = null
 var isFullscreen = false
-var isChargingUiShown = false
 
 fullscreenButton.onclick = function () {
   if (!document.mozFullScreenElement) {
@@ -132,62 +131,10 @@ var updatePlot = function() {
   }
 }
 
-var startRechargeTimeout
-
-var setStartRechargeTimer = function() {
-  startRechargeTimeout = setTimeout(function () {
-    statusDialog.setAttribute('data-status', 'error-request-failed')
-    clearTimeout(startRechargeTimeout)
-  }, 15000)
-}
-
-var clearStartRechargeTimer = function () {
-  if (startRechargeTimeout)
-    clearTimeout(startRechargeTimeout)
-}
-
 var interval = setInterval( function () {
   initPlot()
 
-  bindings.addUpdateListener(function () {
-
-    var isRechargeInProgress = bindings.metrics['Recharge_In_Progress']
-    if (isRechargeInProgress === '1') {
-      clearStartRechargeTimer()
-      statusDialog.setAttribute('data-status', 'idle')
-      isChargingUiShown = true
-      showChargingUi()
-    }
-    else {
-      if (isChargingUiShown) {
-        statusDialog.setAttribute('data-status', 'idle')
-      }
-      showIdleUi()
-      isChargingUiShown = false
-    }
-    if (bindings.messageIsNew && plotSettings.graphEnabled) {
-      updatePlot()
-    }
-    if (bindings.metrics['Recharge_Control_Status'] === 'RECHARGE_STARTING' && statusDialog.getAttribute('data-status') === 'request-sent') {
-      statusDialog.setAttribute('data-status', 'request-received')
-    }
-    if (bindings.metrics['Fault_Flag'] === '1') {
-      faultDialog.removeAttribute('fault-reason')
-      var faultString = parseInt(bindings.metrics['Fault_String'])
-      if (faultString === (1 << 0)) {
-        faultDialog.setAttribute('fault-reason', 'converter-fault')
-      } else if (faultString === (1 << 1)) {
-        faultDialog.setAttribute('fault-reason', 'panel-fault')
-      } else if (faultString === (1 << 2)) {
-        faultDialog.setAttribute('fault-reason', 'vehicle-fault')
-      } else if (faultString === (1 << 3)) {
-        faultDialog.setAttribute('fault-reason', 'plug-fault')
-      }
-      showFaultDialog()
-    } else {
-      hideFaultDialog()
-    }
-  })
+  bindings.addUpdateListener(chargeControl)
   clearInterval(interval)
 })
 
